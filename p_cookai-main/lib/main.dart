@@ -42,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   String? _contentText; // stores the AI message content
   String? _rawResponse;
   final ImagePicker _picker = ImagePicker();
+  final TextEditingController _recipeCountController = TextEditingController(text: '2');
 
   static const String _apiKey = 'f7841902-6ddd-46ea-bf2c-59eaab1bb17f';
   static const String _baseUrl = 'https://api.sambanova.ai/v1/chat/completions';
@@ -71,8 +72,13 @@ class _HomePageState extends State<HomePage> {
       final base64Image = base64Encode(bytes);
       final dataUri = 'data:image/${_image!.path.split('.').last};base64,$base64Image';
 
+      /*final promptText = '''
+Identifica todos los ingredientes de la imagen con su nombre y cantidad aproximada (peso o volumen). Indica para cuántas porciones alcanza y clasifica el tipo de plato (entrante, principal, postre, snack). Proporciona las propiedades nutricionales por porción: calorías, proteínas, grasas, carbohidratos, fibra y vitaminas principales. Sugiere al menos dos recetas que puedan prepararse con estos ingredientes, incluyendo pasos breves de preparación. Añade consejos de conservación y posibles variaciones o sustituciones de ingredientes.''';*/
+      final recipeCount = int.tryParse(_recipeCountController.text) ?? 2;
+
       final promptText = '''
-Identifica todos los ingredientes de la imagen con su nombre y cantidad aproximada (peso o volumen). Indica para cuántas porciones alcanza y clasifica el tipo de plato (entrante, principal, postre, snack). Proporciona las propiedades nutricionales por porción: calorías, proteínas, grasas, carbohidratos, fibra y vitaminas principales. Sugiere al menos dos recetas que puedan prepararse con estos ingredientes, incluyendo pasos breves de preparación. Añade consejos de conservación y posibles variaciones o sustituciones de ingredientes.''';
+Identifica todos los ingredientes de la imagen con su nombre y cantidad aproximada (peso o volumen). Indica para cuántas porciones alcanza y clasifica el tipo de plato (entrante, principal, postre, snack). Proporciona las propiedades nutricionales por porción: calorías, proteínas, grasas, carbohidratos, fibra y vitaminas principales. Sugiere al menos $recipeCount receta${recipeCount == 1 ? '' : 's'} que puedan prepararse con estos ingredientes, incluyendo pasos breves de preparación. Añade consejos de conservación y posibles variaciones o sustituciones de ingredientes.''';
+
 
       final payload = {
         'model': 'Llama-4-Maverick-17B-128E-Instruct',
@@ -126,6 +132,25 @@ Identifica todos los ingredientes de la imagen con su nombre y cantidad aproxima
       setState(() => _loading = false);
     }
   }
+  Map<String, String> _parseContent(String content) {
+  final sections = <String, String>{};
+  final lines = content.split('\n');
+  String? currentSection;
+
+  for (var line in lines) {
+    if (line.trim().isEmpty) continue;
+    if (line.contains(':') && line.indexOf(':') < 30) {
+      final parts = line.split(':');
+      currentSection = parts[0].trim();
+      sections[currentSection] = parts.sublist(1).join(':').trim();
+    } else if (currentSection != null) {
+      sections[currentSection] = '${sections[currentSection]}\n$line';
+    }
+  }
+
+  return sections;
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +188,15 @@ Identifica todos los ingredientes de la imagen con su nombre y cantidad aproxima
                     ),
                   ],
                 ),
+                TextFormField(
+                  controller: _recipeCountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: '¿Cuántas recetas deseas?',
+                    border: OutlineInputBorder(),
+                    suffixIcon: Icon(Icons.restaurant_menu),
+                  ),
+                ),
                 SizedBox(height: 12),
                 ElevatedButton.icon(
                   onPressed: _analyzeImage,
@@ -174,19 +208,36 @@ Identifica todos los ingredientes de la imagen con su nombre y cantidad aproxima
                   Center(child: CircularProgressIndicator()),
                 ],
                 if (_contentText != null) ...[
-                  SizedBox(height: 20),
-                  Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    elevation: 4,
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Text(
-                        _contentText!,
+                SizedBox(height: 20),
+                ..._parseContent(_contentText!).entries.map((entry) {
+                return Card(
+                  margin: EdgeInsets.only(bottom: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 4,
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.key,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepOrange,
+                          ),
+                        ),
+                      SizedBox(height: 8),
+                      Text(
+                        entry.value,
                         style: TextStyle(fontSize: 16),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
+              );
+            }),
+          ],
                 if (!_loading && _contentText == null && _rawResponse != null) ...[
                   SizedBox(height: 20),
                   Card(
