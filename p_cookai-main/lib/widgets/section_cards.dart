@@ -25,21 +25,21 @@ class SectionCards extends StatelessWidget {
       sections[title] = sectionContent;
     }
 
-    Widget buildCard(String title, String body) {
+    Widget buildExpandableCard(String title, String body) {
       return Card(
-        margin: EdgeInsets.symmetric(vertical: 8),
+        margin: const EdgeInsets.symmetric(vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 3,
-        child: Padding(
-          padding: EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("📌 $title", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
-              Text(body.trim(), style: TextStyle(fontSize: 16, height: 1.5)),
-            ],
-          ),
+        child: ExpansionTile(
+          title: Text("📌 $title",
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text(body.trim(),
+                  style: const TextStyle(fontSize: 16, height: 1.5)),
+            ),
+          ],
         ),
       );
     }
@@ -47,17 +47,17 @@ class SectionCards extends StatelessWidget {
     List<Widget> cards = [];
 
     if (sections.containsKey('Identificación de los ingredientes y cantidades aproximadas:')) {
-      cards.add(buildCard('Ingredientes y cantidades',
+      cards.add(buildExpandableCard('Ingredientes y cantidades',
           sections['Identificación de los ingredientes y cantidades aproximadas:']!));
     }
 
     if (sections.containsKey('Número de porciones y tipo de plato:')) {
-      cards.add(buildCard('Porciones y tipo de plato',
+      cards.add(buildExpandableCard('Porciones y tipo de plato',
           sections['Número de porciones y tipo de plato:']!));
     }
 
     if (sections.containsKey('Propiedades nutricionales por porción (aproximadas):')) {
-      cards.add(buildCard('Propiedades nutricionales',
+      cards.add(buildExpandableCard('Propiedades nutricionales',
           sections['Propiedades nutricionales por porción (aproximadas):']!));
     }
 
@@ -65,8 +65,8 @@ class SectionCards extends StatelessWidget {
       final recetasRaw = sections['Recetas sugeridas:']!;
 
       final recetas = recetasRaw
-          .replaceAll('\r\n', '\n') // normaliza saltos de línea
-          .split(RegExp(r'\n(?=\s*####\s)')) // divide por subtítulos
+          .replaceAll('\r\n', '\n')
+          .split(RegExp(r'\n(?=\s*####\s)'))
           .map((e) => e.trim())
           .where((e) => e.startsWith('####'))
           .map((e) {
@@ -77,50 +77,45 @@ class SectionCards extends StatelessWidget {
           })
           .toList();
 
-      cards.add(Card(
-        margin: EdgeInsets.symmetric(vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 3,
-        child: Padding(
-          padding: EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('🍽 Recetas sugeridas',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 12),
-              ...recetas.map((receta) {
-                return Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(receta['title']!,
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                      SizedBox(height: 6),
-                      Text(receta['body']!,
-                          style: TextStyle(fontSize: 15, height: 1.4)),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ],
+      cards.add(
+        Card(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 3,
+          child: ExpansionTile(
+            title: const Text('🍽 Recetas sugeridas',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            children: recetas.map((receta) {
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(receta['title']!,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    Text(receta['body']!,
+                        style: const TextStyle(fontSize: 15, height: 1.4)),
+                  ],
+                ),
+              );
+            }).toList(),
           ),
         ),
-      ));
+      );
     }
 
     if (sections.containsKey('Consejos de conservación:')) {
-      cards.add(buildCard('Consejos de conservación', sections['Consejos de conservación:']!));
+      cards.add(buildExpandableCard('Consejos de conservación', sections['Consejos de conservación:']!));
     }
 
     if (sections.containsKey('Variaciones y sustituciones:')) {
-      cards.add(buildCard('Variaciones y sustituciones',
+      cards.add(buildExpandableCard('Variaciones y sustituciones',
           sections['Variaciones y sustituciones:']!));
     }
 
