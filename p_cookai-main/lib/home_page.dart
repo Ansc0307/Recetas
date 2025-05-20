@@ -58,73 +58,136 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text('Llama 4 Vision Maverick'), centerTitle: true),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (_image != null)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(File(_image!.path), height: 240, fit: BoxFit.cover),
+      appBar: AppBar(
+        title: const Text('Llama 4 Vision Maverick'),
+        centerTitle: true,
+        elevation: 3,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Column(
+            children: [
+              if (_image != null)
+                Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
                   ),
-                SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: _pickFromGallery,
-                        icon: Icon(Icons.photo_library),
-                        label: Text('Galería'),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: _takePhoto,
-                        icon: Icon(Icons.camera_alt),
-                        label: Text('Cámara'),
-                      ),
-                    ),
-                  ],
+                  child: Image.file(
+                    File(_image!.path),
+                    height: 250,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              else
+                Container(
+                  height: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.grey.shade200,
+                  ),
+                  child: Center(
+                    child: Icon(Icons.image_not_supported,
+                        size: 80, color: Colors.grey.shade400),
+                  ),
                 ),
-                SizedBox(height: 12),
-                ElevatedButton.icon(
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _pickFromGallery,
+                      icon: const Icon(Icons.photo_library),
+                      label: const Text('Galería'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        textStyle:
+                            const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _takePhoto,
+                      icon: const Icon(Icons.camera_alt),
+                      label: const Text('Cámara'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        textStyle:
+                            const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
                   onPressed: _analyzeImage,
-                  icon: Icon(Icons.analytics),
-                  label: Text('Analizar Imagen'),
-                ),
-                if (_loading) ...[
-                  SizedBox(height: 20),
-                  Center(child: CircularProgressIndicator()),
-                ],
-                if (_contentText != null && !_loading) ...[
-                  SizedBox(height: 20),
-                  SectionCards(content: _contentText!),
-                ],
-                if (_contentText == null && _rawResponse != null && !_loading) ...[
-                  SizedBox(height: 20),
-                  Card(
-                    color: Colors.red.shade50,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    elevation: 2,
-                    child: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Text(
-                        'Respuesta cruda:\n\n$_rawResponse',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ),
+                  icon: const Icon(Icons.analytics),
+                  label: const Text('Analizar Imagen'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle:
+                        const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                ],
-              ],
-            ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Expanded(
+                child: _loading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _contentText != null
+                        ? SingleChildScrollView(
+                            child: SectionCards(content: _contentText!),
+                          )
+                        : _rawResponse != null
+                            ? SingleChildScrollView(
+                                child: Card(
+                                  color: Colors.red.shade50,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  elevation: 2,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16),
+                                    child: SelectableText(
+                                      'Respuesta cruda:\n\n$_rawResponse',
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        fontFamily: 'monospace',
+                                        fontSize: 14,
+                                        color: Colors.red.shade900,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Center(
+                                child: Text(
+                                  'Selecciona o toma una foto para comenzar.',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontSize: 16,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                              ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
