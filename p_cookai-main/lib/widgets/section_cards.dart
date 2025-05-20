@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'expandable_card.dart';
 
 class SectionCards extends StatelessWidget {
   final String content;
@@ -8,8 +9,6 @@ class SectionCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sections = <String, String>{};
-
-    // Captura encabezados que empiezan con ###
     final regex = RegExp(r'^### (.*?)\s*\n', multiLine: true);
     final matches = regex.allMatches(content);
 
@@ -19,54 +18,46 @@ class SectionCards extends StatelessWidget {
       final end = (i + 1 < matches.length)
           ? matches.elementAt(i + 1).start
           : content.length;
-
       final title = current.group(1)!.trim();
       final sectionContent = content.substring(start, end).trim();
       sections[title] = sectionContent;
     }
 
-    Widget buildExpandableCard(String title, String body) {
-      return Card(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 3,
-        child: ExpansionTile(
-          title: Text("📌 $title",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(body.trim(),
-                  style: const TextStyle(fontSize: 16, height: 1.5)),
-            ),
-          ],
-        ),
-      );
-    }
-
-    List<Widget> cards = [];
+    final cards = <Widget>[];
 
     if (sections.containsKey('Identificación de los ingredientes y cantidades aproximadas:')) {
-      cards.add(buildExpandableCard('Ingredientes y cantidades',
-          sections['Identificación de los ingredientes y cantidades aproximadas:']!));
+      cards.add(ExpandableCard(
+        title: 'Ingredientes y cantidades',
+        body: sections['Identificación de los ingredientes y cantidades aproximadas:']!,
+        color: Colors.green.shade50,
+        icon: Icons.shopping_cart,
+      ));
     }
 
     if (sections.containsKey('Número de porciones y tipo de plato:')) {
-      cards.add(buildExpandableCard('Porciones y tipo de plato',
-          sections['Número de porciones y tipo de plato:']!));
+      cards.add(ExpandableCard(
+        title: 'Porciones y tipo de plato',
+        body: sections['Número de porciones y tipo de plato:']!,
+        color: Colors.blue.shade50,
+        icon: Icons.dinner_dining,
+      ));
     }
 
     if (sections.containsKey('Propiedades nutricionales por porción (aproximadas):')) {
-      cards.add(buildExpandableCard('Propiedades nutricionales',
-          sections['Propiedades nutricionales por porción (aproximadas):']!));
+      cards.add(ExpandableCard(
+        title: 'Propiedades nutricionales',
+        body: sections['Propiedades nutricionales por porción (aproximadas):']!,
+        color: Colors.red.shade50,
+        icon: Icons.favorite,
+      ));
     }
 
     if (sections.containsKey('Recetas sugeridas:')) {
       final recetasRaw = sections['Recetas sugeridas:']!;
 
       final recetas = recetasRaw
-          .replaceAll('\r\n', '\n')
-          .split(RegExp(r'\n(?=\s*####\s)'))
+          .replaceAll('\r\n', '\n') // normaliza saltos de línea
+          .split(RegExp(r'\n(?=\s*####\s)')) // divide por subtítulos
           .map((e) => e.trim())
           .where((e) => e.startsWith('####'))
           .map((e) {
@@ -77,20 +68,25 @@ class SectionCards extends StatelessWidget {
           })
           .toList();
 
+      // Añadimos la card para recetas sugeridas con un widget personalizado:
       cards.add(
         Card(
           margin: const EdgeInsets.symmetric(vertical: 8),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           elevation: 3,
+          color: Colors.orange.shade50,
           child: ExpansionTile(
-            title: const Text('🍽 Recetas sugeridas',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            leading: const Icon(Icons.restaurant_menu, color: Colors.black54),
+            title: const Text(
+              '🍽 Recetas sugeridas',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             children: recetas.map((receta) {
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                margin: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.orange.shade50,
+                  color: Colors.orange.shade100,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
@@ -99,8 +95,7 @@ class SectionCards extends StatelessWidget {
                     Text(receta['title']!,
                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 6),
-                    Text(receta['body']!,
-                        style: const TextStyle(fontSize: 15, height: 1.4)),
+                    Text(receta['body']!, style: const TextStyle(fontSize: 15, height: 1.4)),
                   ],
                 ),
               );
@@ -111,14 +106,28 @@ class SectionCards extends StatelessWidget {
     }
 
     if (sections.containsKey('Consejos de conservación:')) {
-      cards.add(buildExpandableCard('Consejos de conservación', sections['Consejos de conservación:']!));
+      cards.add(ExpandableCard(
+        title: 'Consejos de conservación',
+        body: sections['Consejos de conservación:']!,
+        color: Colors.teal.shade50,
+        icon: Icons.lightbulb,
+      ));
     }
 
     if (sections.containsKey('Variaciones y sustituciones:')) {
-      cards.add(buildExpandableCard('Variaciones y sustituciones',
-          sections['Variaciones y sustituciones:']!));
+      cards.add(ExpandableCard(
+        title: 'Variaciones y sustituciones',
+        body: sections['Variaciones y sustituciones:']!,
+        color: Colors.purple.shade50,
+        icon: Icons.swap_horiz,
+      ));
     }
 
-    return Column(children: cards);
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(children: cards),
+      ),
+    );
   }
 }
