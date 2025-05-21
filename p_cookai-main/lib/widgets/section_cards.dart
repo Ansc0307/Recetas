@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'expandable_card.dart';
 
 class SectionCards extends StatelessWidget {
-  final String content;
+  String content; // mutable para poder modificarla
 
-  const SectionCards({Key? key, required this.content}) : super(key: key);
+  SectionCards({Key? key, required this.content}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final sections = <String, String>{};
+
+    // Verificar si el contenido tiene '#' en alguna parte
+    if (!content.contains('#')) {
+      // Reemplazamos ** por ### y * por #### para que tenga formato Markdown válido
+      content = content.replaceAll('**', '###').replaceAll('*', '####');
+    }
+
+    // Regex para dividir en secciones según ### título
     final regex = RegExp(r'^### (.*?)\s*\n', multiLine: true);
     final matches = regex.allMatches(content);
 
@@ -68,7 +76,6 @@ class SectionCards extends StatelessWidget {
           })
           .toList();
 
-      // Añadimos la card para recetas sugeridas con un widget personalizado:
       cards.add(
         Card(
           margin: const EdgeInsets.symmetric(vertical: 8),

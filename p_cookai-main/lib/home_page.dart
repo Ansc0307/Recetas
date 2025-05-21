@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Llama 4 Vision Maverick'),
+        title: const Text('Mi Cocina'),
         centerTitle: true,
         elevation: 3,
       ),
