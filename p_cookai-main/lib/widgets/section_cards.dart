@@ -6,37 +6,46 @@ class SectionCards extends StatelessWidget {
 
   SectionCards({Key? key, required this.content}) : super(key: key);
 
+  // Método para normalizar los títulos como antes
+  String normalizeTitles(String text) {
+    // Si ya hay títulos con #
+    if (text.contains('#')) {
+      return text; // Ya está normalizado
+    }
+
+    final regexAsteriscos = RegExp(r'\*\*(.+?)\*\*');
+    final matches = regexAsteriscos.allMatches(text).toList();
+
+    int count = 0;
+    String newText = text;
+
+    for (final match in matches) {
+      count++;
+      final fullMatch = match.group(0)!; // **titulo**
+      final titleText = match.group(1)!; // titulo sin **
+
+      if (count.isOdd) {
+        // Reemplazar solo la ocurrencia específica por título ###
+        newText = newText.replaceFirst(fullMatch, '### $titleText');
+      } else {
+        // Remover la ocurrencia par
+        newText = newText.replaceFirst(fullMatch, '');
+      }
+    }
+
+    return newText;
+  }
+
   @override
   Widget build(BuildContext context) {
     final sections = <String, String>{};
 
+    // Normalizar contenido si no tiene ya títulos
     if (!content.contains('#')) {
-      // Buscamos todos los matches de **texto**
-      final regexAsteriscos = RegExp(r'\*\*(.+?)\*\*');
-      final matches = regexAsteriscos.allMatches(content).toList();
-
-      // Iteramos y reemplazamos solo los impares (1,3,5...) por ### título
-      // y los pares (2,4,6...) los eliminamos
-      int count = 0;
-      String newContent = content;
-
-      for (final match in matches) {
-        count++;
-        final fullMatch = match.group(0)!; // **titulo**
-        final titleText = match.group(1)!; // titulo sin **
-
-        if (count.isOdd) {
-          // Reemplazar solo la ocurrencia específica
-          newContent = newContent.replaceFirst(fullMatch, '### $titleText');
-        } else {
-          // Remover la ocurrencia (reemplazar por vacio)
-          newContent = newContent.replaceFirst(fullMatch, '');
-        }
-      }
-
-      content = newContent;
+      content = normalizeTitles(content);
     }
 
+    // Extraemos secciones usando títulos ### 
     final regex = RegExp(r'^### (.*?)\s*\n', multiLine: true);
     final matches = regex.allMatches(content);
 
@@ -51,8 +60,7 @@ class SectionCards extends StatelessWidget {
       sections[title] = sectionContent;
     }
 
-    // (Aquí sigue el resto de tu código igual, agregando las cards...)
-
+    // Construimos las cards según las secciones encontradas
     final cards = <Widget>[];
 
     if (sections.containsKey('Identificación de los ingredientes y cantidades aproximadas:')) {
@@ -87,7 +95,7 @@ class SectionCards extends StatelessWidget {
 
       final recetas = recetasRaw
           .replaceAll('\r\n', '\n') // normaliza saltos de línea
-          .split(RegExp(r'\n(?=\s*####\s)')) // divide por subtítulos
+          .split(RegExp(r'\n(?=\s*####\s)')) // divide por subtítulos ####
           .map((e) => e.trim())
           .where((e) => e.startsWith('####'))
           .map((e) {
