@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'expandable_card.dart';
 
 class SectionCards extends StatelessWidget {
-  String content; // mutable para poder modificarla
+  String content; // mutable para modificar
 
   SectionCards({Key? key, required this.content}) : super(key: key);
 
@@ -10,13 +10,33 @@ class SectionCards extends StatelessWidget {
   Widget build(BuildContext context) {
     final sections = <String, String>{};
 
-    // Verificar si el contenido tiene '#' en alguna parte
     if (!content.contains('#')) {
-      // Reemplazamos ** por ### y * por #### para que tenga formato Markdown válido
-      content = content.replaceAll('**', '###').replaceAll('*', '####');
+      // Buscamos todos los matches de **texto**
+      final regexAsteriscos = RegExp(r'\*\*(.+?)\*\*');
+      final matches = regexAsteriscos.allMatches(content).toList();
+
+      // Iteramos y reemplazamos solo los impares (1,3,5...) por ### título
+      // y los pares (2,4,6...) los eliminamos
+      int count = 0;
+      String newContent = content;
+
+      for (final match in matches) {
+        count++;
+        final fullMatch = match.group(0)!; // **titulo**
+        final titleText = match.group(1)!; // titulo sin **
+
+        if (count.isOdd) {
+          // Reemplazar solo la ocurrencia específica
+          newContent = newContent.replaceFirst(fullMatch, '### $titleText');
+        } else {
+          // Remover la ocurrencia (reemplazar por vacio)
+          newContent = newContent.replaceFirst(fullMatch, '');
+        }
+      }
+
+      content = newContent;
     }
 
-    // Regex para dividir en secciones según ### título
     final regex = RegExp(r'^### (.*?)\s*\n', multiLine: true);
     final matches = regex.allMatches(content);
 
@@ -30,6 +50,8 @@ class SectionCards extends StatelessWidget {
       final sectionContent = content.substring(start, end).trim();
       sections[title] = sectionContent;
     }
+
+    // (Aquí sigue el resto de tu código igual, agregando las cards...)
 
     final cards = <Widget>[];
 
