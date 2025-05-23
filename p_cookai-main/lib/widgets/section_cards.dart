@@ -63,32 +63,48 @@ class SectionCards extends StatelessWidget {
     // Construimos las cards según las secciones encontradas
     final cards = <Widget>[];
 
-    if (sections.containsKey('Identificación de los ingredientes y cantidades aproximadas:')) {
-      cards.add(ExpandableCard(
-        title: 'Ingredientes y cantidades',
-        body: sections['Identificación de los ingredientes y cantidades aproximadas:']!,
-        color: Colors.green.shade50,
-        icon: Icons.shopping_cart,
-      ));
-    }
+    if (sections.containsKey('Identificación de los ingredientes y cantidades aproximadas:') ||
+    sections.containsKey('Ingredientes y Cantidades Aproximadas:')) {
+  final key = sections.containsKey('Identificación de los ingredientes y cantidades aproximadas:')
+      ? 'Identificación de los ingredientes y cantidades aproximadas:'
+      : 'Ingredientes y Cantidades Aproximadas:';
 
-    if (sections.containsKey('Número de porciones y tipo de plato:')) {
-      cards.add(ExpandableCard(
-        title: 'Porciones y tipo de plato',
-        body: sections['Número de porciones y tipo de plato:']!,
-        color: Colors.blue.shade50,
-        icon: Icons.dinner_dining,
-      ));
-    }
+  cards.add(ExpandableCard(
+    title: 'Ingredientes y cantidades',
+    body: sections[key]!,
+    color: Colors.green.shade50,
+    icon: Icons.shopping_cart,
+  ));
+}
 
-    if (sections.containsKey('Propiedades nutricionales por porción (aproximadas):')) {
-      cards.add(ExpandableCard(
-        title: 'Propiedades nutricionales',
-        body: sections['Propiedades nutricionales por porción (aproximadas):']!,
-        color: Colors.red.shade50,
-        icon: Icons.favorite,
-      ));
-    }
+
+    if (sections.containsKey('Número de porciones y tipo de plato:') ||
+    sections.containsKey('Número de Porciones y Tipo de Plato:')) {
+  final key = sections.containsKey('Número de porciones y tipo de plato:')
+      ? 'Número de porciones y tipo de plato:'
+      : 'Número de Porciones y Tipo de Plato:';
+
+  cards.add(ExpandableCard(
+    title: 'Porciones y tipo de plato',
+    body: sections[key]!,
+    color: Colors.blue.shade50,
+    icon: Icons.dinner_dining,
+  ));
+}
+
+    if (sections.containsKey('Propiedades nutricionales por porción (aproximadas):') ||
+    sections.containsKey('Propiedades Nutricionales por Porción:')) {
+  final key = sections.containsKey('Propiedades nutricionales por porción (aproximadas):')
+      ? 'Propiedades nutricionales por porción (aproximadas):'
+      : 'Propiedades Nutricionales por Porción:';
+
+  cards.add(ExpandableCard(
+    title: 'Propiedades nutricionales',
+    body: sections[key]!,
+    color: Colors.red.shade50,
+    icon: Icons.favorite,
+  ));
+}
 
     if (sections.containsKey('Recetas sugeridas:')) {
       final recetasRaw = sections['Recetas sugeridas:']!;
