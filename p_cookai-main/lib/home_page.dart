@@ -1,11 +1,12 @@
 import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:cookai_prototype/analysis_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'image_service.dart';
 import 'widgets/section_cards.dart';
 import 'analysis_history.dart'; //encarpetar en "model"
 import 'history_store.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -48,7 +49,20 @@ class _HomePageState extends State<HomePage> {
         _contentText = result.contentText;
         _rawResponse = result.rawResponse;
       });
-      
+      if (_contentText != null) {
+        final directory = await getApplicationDocumentsDirectory();
+        final fileName = _image!.path.split('/').last;
+        final savedImagePath = '${directory.path}/$fileName';
+        await File(_image!.path).copy(savedImagePath);
+
+        HistoryStore.addEntry(
+          AnalysisEntry(
+            imagePath: savedImagePath,
+            content: _contentText!,
+            date: DateTime.now(),
+          ),
+        );
+      }
 
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -66,7 +80,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Recetario inteligente'), centerTitle: true),
+      appBar: AppBar(title: Text('NutrIA'), centerTitle: true),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -121,6 +135,16 @@ class _HomePageState extends State<HomePage> {
                   onPressed: _analyzeImage,
                   icon: Icon(Icons.analytics),
                   label: Text('Analizar Imagen'),
+                ),
+                SizedBox(height: 12),
+                IconButton(
+                  icon: Icon(Icons.history),
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AnalysisHistoryPage())
+                    );
+                  }
                 ),
                 if (_loading) ...[
                   SizedBox(height: 20),
