@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'analysis_history.dart';
 import 'history_store.dart';
 import 'dart:io';
+import 'package:cookai_prototype/widgets/section_cards.dart';
 
 class AnalysisHistoryPage extends StatelessWidget {
   const AnalysisHistoryPage({super.key});
@@ -27,46 +28,50 @@ class AnalysisHistoryPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 final entry = entries[index];
                 return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  elevation: 3,
-                  child: ListTile(
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.file(
-                        File(entry.imagePath),
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-                      ),
+  margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+  child: Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(
+                File(entry.imagePath),
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+              ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Fecha: ${entry.date.day}/${entry.date.month}/${entry.date.year}  ${entry.date.hour}:${entry.date.minute.toString().padLeft(2, '0')}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 12),
+        //SectionCards(content: entry.content),
+        ExpansionTile(
+  title: const Text(
+    'Ver detalles',
+    style: TextStyle(fontWeight: FontWeight.w600),
+  ),
+  children: [
+    SectionCards(content: entry.content),
+  ],
+),
 
-                    ),
-                    title: Text(
-                      entry.content.length > 100
-                          ? '${entry.content.substring(0, 100)}...'
-                          : entry.content,
-                    ),
-                    subtitle: Text(
-                      'Fecha: ${entry.date.day}/${entry.date.month}/${entry.date.year}  ${entry.date.hour}:${entry.date.minute.toString().padLeft(2, '0')}',
-                    ),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: const Text('Análisis completo'),
-                          content: SingleChildScrollView(child: Text(entry.content)),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Cerrar'),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                );
+      ],
+    ),
+  ),
+);
+
               },
             ),
     );
