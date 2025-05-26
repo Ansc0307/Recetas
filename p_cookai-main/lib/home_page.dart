@@ -1,8 +1,12 @@
 import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:cookai_prototype/analysis_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'image_service.dart';
 import 'widgets/section_cards.dart';
+import 'analysis_history.dart'; //encarpetar en "model"
+import 'history_store.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   bool _loading = false;
   String? _contentText;
   String? _rawResponse;
-
+  int _numRecetas = 2;
   final ImagePicker _picker = ImagePicker();
 
   void _setImage(XFile picked) {
@@ -38,11 +42,28 @@ class _HomePageState extends State<HomePage> {
     setState(() => _loading = true);
 
     try {
-      final result = await analyzeImageWithApi(File(_image!.path));
+      //final result = await analyzeImageWithApi(File(_image!.path));
+      final result = await analyzeImageWithApi(File(_image!.path), _numRecetas);
+      print("🔍 CONTENIDO COMPLETO:\n${result.contentText}");
       setState(() {
         _contentText = result.contentText;
         _rawResponse = result.rawResponse;
       });
+      if (_contentText != null) {
+        final directory = await getApplicationDocumentsDirectory();
+        final fileName = _image!.path.split('/').last;
+        final savedImagePath = '${directory.path}/$fileName';
+        await File(_image!.path).copy(savedImagePath);
+
+        HistoryStore.addEntry(
+          AnalysisEntry(
+            imagePath: savedImagePath,
+            content: _contentText!,
+            date: DateTime.now(),
+          ),
+        );
+      }
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
@@ -59,7 +80,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Llama 4 Vision Maverick'), centerTitle: true),
+      appBar: AppBar(title: Text('NutrIA'), centerTitle: true),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -93,10 +114,37 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 SizedBox(height: 12),
+                Text("Recetas a sugerir:", style: TextStyle(fontSize: 16)),
+                    SizedBox(width: 12),
+                    DropdownButton<int>(
+                      value: _numRecetas,
+                        items: [1, 2, 3, 4, 5].map((num) {
+                          return DropdownMenuItem<int>(
+                          value: num,
+                          child: Text(num.toString()),
+                        );
+                      }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _numRecetas = value);
+                      }
+                    },
+                    ),
+                  SizedBox(height: 12),
                 ElevatedButton.icon(
                   onPressed: _analyzeImage,
                   icon: Icon(Icons.analytics),
                   label: Text('Analizar Imagen'),
+                ),
+                SizedBox(height: 12),
+                IconButton(
+                  icon: Icon(Icons.history),
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AnalysisHistoryPage())
+                    );
+                  }
                 ),
                 if (_loading) ...[
                   SizedBox(height: 20),
