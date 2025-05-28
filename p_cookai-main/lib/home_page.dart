@@ -76,7 +76,38 @@ class _HomePageState extends State<HomePage> {
       setState(() => _loading = false);
     }
   }
+//-------------------------------------------------
+Future<void> _analyzeIgredientes() async {
+    if (_image == null) return;
+    setState(() => _loading = true);
 
+    try {
+      //final result = await analyzeImageWithApi(File(_image!.path));
+      final result = await analyzeIngredientesWithApi(File(_image!.path));
+      print("🔍 Anlisis ingrediente:\n${result.contentText}");
+      setState(() {
+        _contentText = result.contentText;
+        _rawResponse = result.rawResponse;
+      });
+      if (_contentText != null) {
+        final directory = await getApplicationDocumentsDirectory();
+        final fileName = _image!.path.split('/').last;
+        final savedImagePath = '${directory.path}/$fileName';
+        await File(_image!.path).copy(savedImagePath);
+      }
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+      setState(() {
+        _contentText = '❌ Error al analizar la imagen.';
+        _rawResponse = null;
+      });
+    } finally {
+      setState(() => _loading = false);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,6 +166,12 @@ class _HomePageState extends State<HomePage> {
                   onPressed: _analyzeImage,
                   icon: Icon(Icons.analytics),
                   label: Text('Analizar Imagen'),
+                ),
+                SizedBox(height: 12),
+                ElevatedButton.icon(
+                  onPressed: _analyzeIgredientes,
+                  icon: Icon(Icons.analytics),
+                  label: Text('Analizar Ingrediente'),
                 ),
                 SizedBox(height: 12),
                 IconButton(

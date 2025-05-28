@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'analysis_history.dart';
 import 'history_store.dart';
 import 'dart:io';
 import 'package:cookai_prototype/widgets/section_cards.dart';
