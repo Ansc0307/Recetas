@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'Nodo/circlenode.dart';
-import 'Nodo/custom_shapes.dart';
-import 'Nodo/plate_painter.dart';
-import 'Nodo/TableBackgroundPainter.dart';
+import 'Menu/circlenode.dart';
+import 'Menu/custom_shapes.dart';
+import 'Menu/plate_painter.dart';
+import 'Menu/TableBackgroundPainter.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
