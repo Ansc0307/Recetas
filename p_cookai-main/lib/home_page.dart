@@ -123,7 +123,11 @@ Future<void> _analyzeIgredientes() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('NutrIA'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text(
+          'F.O.O.D.I.E. – Food Observer with Optimized Detection and Intelligent Engine',
+          style: TextStyle(color: Colors.white),
+        ), centerTitle: true),
       body: Stack(
         children: [
           SingleChildScrollView(
