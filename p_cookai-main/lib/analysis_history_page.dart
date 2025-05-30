@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'history_store.dart';
 import 'dart:io';
+import 'tts_service.dart';
 import 'package:cookai_prototype/widgets/section_cards.dart';
 
 class AnalysisHistoryPage extends StatelessWidget {
@@ -57,12 +58,17 @@ class AnalysisHistoryPage extends StatelessWidget {
         SizedBox(height: 12),
         //SectionCards(content: entry.content),
         ExpansionTile(
-  title: const Text(
-    'Ver detalles',
-    style: TextStyle(fontWeight: FontWeight.w600),
-  ),
+  title: const Text('Ver detalles'),
   children: [
-    SectionCards(content: entry.content),
+    Column(
+      children: [
+        IconButton(
+          icon: Icon(Icons.volume_up, color: Colors.blue),
+          onPressed: () => TextToSpeech.speak(entry.content),
+        ),
+        SectionCards(content: entry.content),
+      ],
+    ),
   ],
 ),
 
