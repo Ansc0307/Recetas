@@ -121,167 +121,216 @@ Future<void> _analyzeIgredientes() async {
     }
   }
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'F.O.O.D.I.E. – Food Observer with Optimized Detection and Intelligent Engine',
-          style: TextStyle(color: Colors.white),
-        ), centerTitle: true),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (_image != null)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(File(_image!.path), height: 240, fit: BoxFit.cover),
-                  ),
-                SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: _pickFromGallery,
-                        icon: Icon(Icons.photo_library),
-                        label: Text('Galería'),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: _takePhoto,
-                        icon: Icon(Icons.camera_alt),
-                        label: Text('Cámara'),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12),
-                Text("Recetas a sugerir:", style: TextStyle(fontSize: 16)),
-                    SizedBox(width: 12),
-                    DropdownButton<int>(
-                      value: _numRecetas,
-                        items: [1, 2, 3, 4, 5].map((num) {
-                          return DropdownMenuItem<int>(
-                          value: num,
-                          child: Text(num.toString()),
-                        );
-                      }).toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() => _numRecetas = value);
-                      }
-                    },
-                    ),
-                  SizedBox(height: 12),
-                ElevatedButton.icon(
-                  onPressed: _analyzeImage,
-                  icon: Icon(Icons.analytics),
-                  label: Text('Analizar Imagen'),
-                ),
-                SizedBox(height: 12),
-                ElevatedButton.icon(
-                  onPressed: _analyzeIgredientes,
-                  icon: Icon(Icons.analytics),
-                  label: Text('Analizar Ingrediente'),
-                ),
-                SizedBox(height: 12),
-                IconButton(
-                  icon: Icon(Icons.history),
-                  onPressed: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AnalysisHistoryPage())
-                    );
-                  }
-                ),
-                if (_loading) ...[
-                  SizedBox(height: 20),
-                  Center(child: CircularProgressIndicator()),
-                ],
-                if (_contentText != null && !_loading) ...[
-                  SizedBox(height: 20),
-                  //SectionCards(content: _contentText!),
-                  Row(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    IconButton(
-      icon: Icon(Icons.replay),
-      onPressed: _ttsController.replay,
-      tooltip: 'Repetir',
-    ),
-    IconButton(
-      icon: Icon(_ttsController.isSpeaking ? Icons.pause : Icons.play_arrow),
-      onPressed: () async {
-  if (_isSpeaking) {
-    await _ttsController.pause(); // aunque pause tampoco funciona en todas las plataformas
-  } else {
-    await _ttsController.speak(_contentText!);
-  }
-  setState(() => _isSpeaking = !_isSpeaking);
-},
-      tooltip: _ttsController.isSpeaking ? 'Pausar' : 'Reproducir',
-    ),
-    IconButton(
-      icon: Icon(Icons.stop),
-      onPressed: () async {
-        await _ttsController.stop();
-        setState(() {});
-      },
-      tooltip: 'Detener',
-    ),
-  ],
-),
-    
-    // Botones para secciones específicas
-    if (_contentSections != null) ...[
-      Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 8,
-        children: _contentSections!.entries.map((entry) {
-          return ElevatedButton.icon(
-            icon: Icon(Icons.volume_up, size: 16),
-            label: Text(entry.key),
-            onPressed: () => _ttsController.speak("${entry.key}: ${entry.value}"),
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            ),
+  Widget _buildButtonRow() {
+  return Row(
+    children: [
+      Expanded(
+        child: ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.deepPurple,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 4,
+          ),
+          onPressed: _pickFromGallery,
+          icon: const Icon(Icons.photo_library),
+          label: const Text('Galería'),
+        ),
+      ),
+      const SizedBox(width: 8),
+      Expanded(
+        child: ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.deepPurple,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 4,
+          ),
+          onPressed: _takePhoto,
+          icon: const Icon(Icons.camera_alt),
+          label: const Text('Cámara'),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _buildDropdownAndAnalyze() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text("Recetas a sugerir:", style: TextStyle(fontSize: 16, color: Colors.black87)),
+      DropdownButton<int>(
+        value: _numRecetas,
+        items: [1, 2, 3, 4, 5].map((num) {
+          return DropdownMenuItem<int>(
+            value: num,
+            child: Text(num.toString()),
           );
         }).toList(),
+        onChanged: (value) => setState(() => _numRecetas = value!),
       ),
-      SizedBox(height: 16),
+      const SizedBox(height: 12),
+      ElevatedButton.icon(
+        style: _buttonStyle(),
+        onPressed: _analyzeImage,
+        icon: const Icon(Icons.analytics),
+        label: const Text('Analizar Imagen'),
+      ),
+      const SizedBox(height: 8),
+      ElevatedButton.icon(
+        style: _buttonStyle(),
+        onPressed: _analyzeIgredientes,
+        icon: const Icon(Icons.restaurant_menu),
+        label: const Text('Analizar Ingredientes'),
+      ),
     ],
-    
-    // Secciones de contenido
-    if (_contentText != null && !_loading) ...[
-  SizedBox(height: 20),
-  SectionCards(content: _contentText!),
-],
-                ],
-                if (_contentText == null && _rawResponse != null && !_loading) ...[
-                  SizedBox(height: 20),
-                  Card(
-                    color: Colors.red.shade50,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    elevation: 2,
-                    child: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Text(
-                        'Respuesta cruda:\n\n$_rawResponse',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
+  );
+}
+
+ButtonStyle _buttonStyle() {
+  return ElevatedButton.styleFrom(
+    backgroundColor: Colors.deepPurpleAccent.shade100,
+    foregroundColor: Colors.white,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 4,
+  );
+}
+
+Widget _buildHistoryButton(BuildContext context) {
+  return ElevatedButton.icon(
+    style: _buttonStyle(),
+    icon: const Icon(Icons.history),
+    label: const Text("Ver historial"),
+    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AnalysisHistoryPage())),
+  );
+}
+
+Widget _buildTTSControls() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      IconButton(
+        icon: const Icon(Icons.replay),
+        tooltip: 'Repetir',
+        onPressed: _ttsController.replay,
       ),
-    );
+      IconButton(
+        icon: Icon(_ttsController.isSpeaking ? Icons.pause : Icons.play_arrow),
+        tooltip: _ttsController.isSpeaking ? 'Pausar' : 'Reproducir',
+        onPressed: () async {
+          if (_isSpeaking) {
+            await _ttsController.pause();
+          } else {
+            await _ttsController.speak(_contentText!);
+          }
+          setState(() => _isSpeaking = !_isSpeaking);
+        },
+      ),
+      IconButton(
+        icon: const Icon(Icons.stop),
+        tooltip: 'Detener',
+        onPressed: () async {
+          await _ttsController.stop();
+          setState(() {});
+        },
+      ),
+    ],
+  );
+}
+
+Widget _buildSectionTTSButtons() {
+  return Wrap(
+    alignment: WrapAlignment.center,
+    spacing: 8,
+    children: _contentSections!.entries.map((entry) {
+      return ElevatedButton.icon(
+        icon: const Icon(Icons.volume_up, size: 16),
+        label: Text(entry.key),
+        onPressed: () => _ttsController.speak("${entry.key}: ${entry.value}"),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.deepPurple,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+    }).toList(),
+  );
+}
+
+Widget _buildRawResponseCard() {
+  return Card(
+    color: Colors.red.shade50,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 2,
+    child: Padding(
+      padding: const EdgeInsets.all(12),
+      child: Text(
+        'Respuesta cruda:\n\n$_rawResponse',
+        style: const TextStyle(fontSize: 14),
+      ),
+    ),
+  );
+}
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+  extendBodyBehindAppBar: true,
+  appBar: AppBar(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    title: const Text(
+      'F.O.O.D.I.E.',
+      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+    ),
+    centerTitle: true,
+  ),
+      body: Container(
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Color(0xFFB2EBF2), Color(0xFFD1C4E9)], // Azul pastel a morado pastel
+      ),
+    ),
+    child: SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (_image != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.file(File(_image!.path), height: 240, fit: BoxFit.cover),
+              ),
+            const SizedBox(height: 20),
+            _buildButtonRow(),
+            const SizedBox(height: 16),
+            _buildDropdownAndAnalyze(),
+            const SizedBox(height: 16),
+            _buildHistoryButton(context),
+            if (_loading) ...[
+              const SizedBox(height: 20),
+              const Center(child: CircularProgressIndicator()),
+            ],
+            if (_contentText != null && !_loading) ...[
+              const SizedBox(height: 20),
+              _buildTTSControls(),
+              const SizedBox(height: 10),
+              if (_contentSections != null) _buildSectionTTSButtons(),
+              const SizedBox(height: 10),
+              SectionCards(content: _contentText!),
+            ],
+            if (_contentText == null && _rawResponse != null && !_loading) ...[
+              const SizedBox(height: 20),
+              _buildRawResponseCard(),
+            ],
+          ],
+        ),
+      ),
+    ),
+  ),
+);
   }
 }
