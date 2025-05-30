@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'Vista/bmi_screen.dart';
-import 'ModelRT/obesity_predictor_form.dart';
-import 'home_page.dart';
-import 'analysis_history_page.dart';
+import '../Vista/bmi_screen.dart';
+import '../ModelRT/obesity_predictor_form.dart';
+import '../home_page.dart';
+import '../analysis_history_page.dart';
 
 class CircleNode extends StatelessWidget {
   final Color color;

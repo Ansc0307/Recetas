@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'Vista/bmi_screen.dart';
-import 'ModelRT/obesity_predictor_form.dart';
-import 'home_page.dart';
-import 'analysis_history_page.dart';
+//import '../Vista/bmi_screen.dart';
+//import 'package:cookai_prototype/bmi.dart';
+import '../screenss/bmi_screen.dart';
+//import '../ModelRT/obesity_predictor_form.dart';
+import '../screens/obesity_predictor_form.dart';
+import '../home_page.dart';
+import '../analysis_history_page.dart';
 import 'custom_shapes.dart'; // Archivo nuevo que definiremos abajo
 
 class CircleNode extends StatelessWidget {
@@ -10,6 +13,7 @@ class CircleNode extends StatelessWidget {
   final String label;
   final Alignment alignment;
   final NodeShape shape;
+  
 
   const CircleNode({
     super.key,
@@ -22,16 +26,16 @@ class CircleNode extends StatelessWidget {
   void _navigate(BuildContext context) {
     Widget destination;
     switch (label) {
-      case 'A':
+      case 'B':
         destination = ObesityPredictorForm();
         break;
-      case 'B':
+      case 'D':
         destination = BmiScreen();
         break;
-      case 'C':
+      case 'A':
         destination = HomePage();
         break;
-      case 'D':
+      case 'C':
         destination = AnalysisHistoryPage();
         break;
       default:
@@ -56,10 +60,7 @@ class CircleNode extends StatelessWidget {
             width: 75,
             height: 75,
             child: Center(
-              child: Text(
-                label,
-                style: const TextStyle(fontSize: 30),
-              ),
+              
             ),
           ),
         ),

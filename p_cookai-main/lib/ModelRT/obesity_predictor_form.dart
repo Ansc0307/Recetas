@@ -1,6 +1,5 @@
-// lib/screens/obesity_predictor_form.dart
 import 'package:flutter/material.dart';
-import '../Render/prediction_service.dart';
+import '../services/prediction_service.dart';
 import '../Grafico/prediction_card.dart';
 
 class ObesityPredictorForm extends StatefulWidget {
@@ -28,42 +27,92 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
 
   String? prediction;
   final double modelAccuracy = 0.9350;
+  bool isLoading = false;
 
   Future<void> _handlePrediction() async {
+    setState(() {
+      isLoading = true;
+      prediction = null;
+    });
+
     final result = await PredictionService.predictObesity(formData);
+
     setState(() {
       prediction = result;
+      isLoading = false;
     });
   }
 
   Widget buildTextInput(String label, String key) {
-    return TextFormField(
-      decoration: InputDecoration(labelText: label),
-      keyboardType: TextInputType.number,
-      onSaved: (value) => formData[key] = value!,
-      validator: (value) => value == null || value.isEmpty ? 'Requerido' : null,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextFormField(
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.blueGrey.shade700),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue.shade300),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue.shade700, width: 2),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          fillColor: Colors.blue.shade50,
+          filled: true,
+        ),
+        keyboardType: TextInputType.number,
+        onSaved: (value) => formData[key] = value!,
+        validator: (value) => value == null || value.isEmpty ? 'Requerido' : null,
+      ),
     );
   }
 
   Widget buildDropdown(String label, String key, List<Map<String, String>> options) {
-    return DropdownButtonFormField<String>(
-      value: formData[key],
-      decoration: InputDecoration(labelText: label),
-      onChanged: (value) => setState(() => formData[key] = value!),
-      items: options
-          .map((opt) => DropdownMenuItem<String>(
-                value: opt['value'],
-                child: Text(opt['label']!),
-              ))
-          .toList(),
-      onSaved: (value) => formData[key] = value!,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: DropdownButtonFormField<String>(
+        value: formData[key],
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.blueGrey.shade700),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue.shade300),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue.shade700, width: 2),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          filled: true,
+          fillColor: Colors.blue.shade50,
+        ),
+        onChanged: (value) => setState(() => formData[key] = value!),
+        items: options
+            .map((opt) => DropdownMenuItem<String>(
+                  value: opt['value'],
+                  child: Text(opt['label']!),
+                ))
+            .toList(),
+        onSaved: (value) => formData[key] = value!,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Predicción de Obesidad')),
+      appBar: AppBar(
+        title: const Text(
+          'Predicción de Salud con IA 🤖',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF1A237E), // Azul petróleo oscuro
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 4,
+        shadowColor: Colors.blueAccent.withOpacity(0.5),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -128,26 +177,82 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
                 {'value': '3', 'label': 'Transporte Público'},
                 {'value': '4', 'label': 'Caminar'},
               ]),
-              SizedBox(height: 20),
+              const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    _handlePrediction();
-                  }
-                },
-                child: Text('Predecir'),
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          _handlePrediction();
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF3949AB), // Azul índigo
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  elevation: 5,
+                  shadowColor: Colors.indigoAccent.withOpacity(0.4),
+                ),
+                child: isLoading
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Text('Cargando...', style: TextStyle(fontSize: 16)),
+                        ],
+                      )
+                    : const Text(
+                        'Predecir',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
               ),
-              SizedBox(height: 20),
-              if (prediction != null) PredictionCard(prediction: prediction!),
-              SizedBox(height: 20),
+              const SizedBox(height: 24),
+              if (isLoading)
+                Center(
+                  child: Column(
+                    children: const [
+                      SizedBox(height: 20),
+                      CircularProgressIndicator(),
+                      SizedBox(height: 12),
+                      Text(
+                        "Cargando resultado...",
+                        style: TextStyle(fontSize: 16, color: Colors.blueGrey),
+                      ),
+                    ],
+                  ),
+                )
+              else if (prediction != null)
+                PredictionCard(prediction: prediction!),
+              const SizedBox(height: 24),
               Card(
                 color: Colors.blue.shade50,
-                elevation: 2,
+                elevation: 3,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shadowColor: Colors.blueAccent.withOpacity(0.3),
                 child: ListTile(
-                  leading: Icon(Icons.assessment, color: Colors.blue),
-                  title: Text('Precisión del modelo'),
-                  subtitle: Text('${(modelAccuracy * 100).toStringAsFixed(2)} %'),
+                  leading: Icon(Icons.assessment, color: Colors.blue.shade700),
+                  title: Text(
+                    'Precisión del modelo',
+                    style: TextStyle(
+                      color: Colors.blueGrey.shade900,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Text(
+                    '${(modelAccuracy * 100).toStringAsFixed(2)} %',
+                    style: TextStyle(color: Colors.blueGrey.shade700),
+                  ),
                 ),
               ),
             ],
