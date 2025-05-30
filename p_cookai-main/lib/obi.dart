@@ -17,28 +17,29 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
     'Weight': '',
     'CALC': '0',
     'FAVC': '0',
-    'FCVC': '',
-    'NCP': '',
+    'FCVC': '1',
+    'NCP': '1',
     'SCC': '0',
     'SMOKE': '0',
-    'CH2O': '',
-    'FAF': '',
-    'TUE': '',
+    'CH2O': '1',
+    'FAF': '0',
+    'TUE': '0',
     'MTRANS': '0',
   };
 
   String? prediction;
 
   Future<void> predictObesity() async {
-    //final url = Uri.parse('https://obesity-api-2.onrender.com'); // <-- Cambia por tu URL
-    final url = Uri.parse('https://obesity-api-1.onrender.com/predict');  // <- correcto
+    final url = Uri.parse('https://obesity-api-1.onrender.com/predict');
+
+    final dataToSend = formData.map((key, value) =>
+        MapEntry(key, value is String ? double.tryParse(value) ?? value : value));
 
     try {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(formData.map((key, value) =>
-            MapEntry(key, value is String ? double.tryParse(value) ?? value : value))),
+        body: jsonEncode(dataToSend),
       );
 
       if (response.statusCode == 200) {
@@ -48,7 +49,7 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
         });
       } else {
         setState(() {
-          prediction = 'Error en la predicción';
+          prediction = 'Error en la predicción: ${response.statusCode}';
         });
       }
     } catch (e) {
@@ -104,49 +105,46 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
                 {'value': '1', 'label': 'Frecuentemente'},
                 {'value': '0', 'label': 'Siempre'},
               ]),
-              buildDropdown('¿Comes frecuentemente alimentos con alto contenido calórico? (FAVC)', 'FAVC', [
+              buildDropdown('¿Comes frecuentemente alimentos calóricos? (FAVC)', 'FAVC', [
                 {'value': '0', 'label': 'No'},
                 {'value': '1', 'label': 'Sí'},
               ]),
-      
-               buildDropdown('¿Sueles comer verduras en tus comidas? (FCVC)', 'FCVC', [
+              buildDropdown('¿Sueles comer verduras? (FCVC)', 'FCVC', [
                 {'value': '2', 'label': 'Nunca'},
                 {'value': '3', 'label': 'A veces'},
                 {'value': '1', 'label': 'Frecuentemente'},
               ]),
-
-              buildDropdown('¿Cuántas comidas principales comes diariamente? (NCP)', 'NCP', [
-                {'value': '1', 'label': 'Uno plato'},
-                {'value': '2', 'label': 'Dos platos'},
-                {'value': '3', 'label': 'Tres platos'},
-                {'value': '4', 'label': 'Cuatro platos'},
+              buildDropdown('Comidas principales al día (NCP)', 'NCP', [
+                {'value': '1', 'label': 'Uno'},
+                {'value': '2', 'label': 'Dos'},
+                {'value': '3', 'label': 'Tres'},
+                {'value': '4', 'label': 'Cuatro'},
               ]),
-              buildDropdown('¿Controlas las calorías que consumes diariamente? (SCC)', 'SCC', [
+              buildDropdown('¿Controlas calorías? (SCC)', 'SCC', [
                 {'value': '0', 'label': 'No'},
                 {'value': '1', 'label': 'Sí'},
               ]),
-              buildDropdown('Fumas (SMOKE)', 'SMOKE', [
+              buildDropdown('¿Fumas? (SMOKE)', 'SMOKE', [
                 {'value': '0', 'label': 'No'},
                 {'value': '1', 'label': 'Sí'},
               ]),
-               buildDropdown('¿Tomas agua diariamente? (CH2O)', 'CH2O', [
+              buildDropdown('¿Tomas agua? (CH2O)', 'CH2O', [
                 {'value': '2', 'label': 'Nunca'},
                 {'value': '3', 'label': 'A veces'},
                 {'value': '1', 'label': 'Frecuentemente'},
               ]),
-              
-              buildDropdown('¿Con qué frecuencia realizas actividad física? (FAF)', 'FAF', [
+              buildDropdown('Actividad física (FAF)', 'FAF', [
                 {'value': '0', 'label': 'Nada'},
-                {'value': '2', 'label': 'Aveces'},
-                {'value': '1', 'label': 'Frecuentemente'},
-                {'value': '3', 'label': 'Todos los dias'},
-              ]),
-              buildDropdown('¿Cuánto tiempo utilizas dispositivos tecnológicos como celular, videojuegos, televisión, computadora y otros? (TUE)', 'TUE', [
-                {'value': '2', 'label': 'Nunca'},
                 {'value': '2', 'label': 'A veces'},
-                {'value': '0', 'label': 'Frecuentemente'},
+                {'value': '1', 'label': 'Frecuente'},
+                {'value': '3', 'label': 'Diaria'},
               ]),
-              buildDropdown('¿Qué transporte utilizas habitualmente? (MTRANS)', 'MTRANS', [
+              buildDropdown('Uso de tecnología (TUE)', 'TUE', [
+                {'value': '2', 'label': 'Nunca'},
+                {'value': '1', 'label': 'A veces'},
+                {'value': '0', 'label': 'Frecuente'},
+              ]),
+              buildDropdown('Medio de transporte (MTRANS)', 'MTRANS', [
                 {'value': '0', 'label': 'Automóvil'},
                 {'value': '2', 'label': 'Motocicleta'},
                 {'value': '1', 'label': 'Bicicleta'},
@@ -164,7 +162,8 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
                 child: Text('Predecir'),
               ),
               SizedBox(height: 20),
-              if (prediction != null) Text('Predicción: $prediction'),
+              if (prediction != null)
+                Text('Predicción: $prediction'),
             ],
           ),
         ),
