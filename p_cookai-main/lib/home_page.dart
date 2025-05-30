@@ -7,6 +7,7 @@ import 'image_service.dart';
 import 'widgets/section_cards.dart';
 import 'analysis_history.dart'; //encarpetar en "model"
 import 'history_store.dart';
+import 'tts_service.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,6 +21,15 @@ class _HomePageState extends State<HomePage> {
   String? _rawResponse;
   int _numRecetas = 2;
   final ImagePicker _picker = ImagePicker();
+  final TextToSpeech _ttsController = TextToSpeech();
+  Map<String, String>? _contentSections;
+  bool _isSpeaking = false;
+
+  @override
+  void dispose() {
+    _ttsController.stop();
+    super.dispose();
+  }
 
   void _setImage(XFile picked) {
     _image = picked;
@@ -50,6 +60,7 @@ class _HomePageState extends State<HomePage> {
         _rawResponse = result.rawResponse;
       });
       if (_contentText != null) {
+        _contentSections = _ttsController.extractSections(_contentText!);
         final directory = await getApplicationDocumentsDirectory();
         final fileName = _image!.path.split('/').last;
         final savedImagePath = '${directory.path}/$fileName';
@@ -90,6 +101,7 @@ Future<void> _analyzeIgredientes() async {
         _rawResponse = result.rawResponse;
       });
       if (_contentText != null) {
+        _contentSections = _ttsController.extractSections(_contentText!);
         final directory = await getApplicationDocumentsDirectory();
         final fileName = _image!.path.split('/').last;
         final savedImagePath = '${directory.path}/$fileName';
@@ -189,7 +201,62 @@ Future<void> _analyzeIgredientes() async {
                 ],
                 if (_contentText != null && !_loading) ...[
                   SizedBox(height: 20),
-                  SectionCards(content: _contentText!),
+                  //SectionCards(content: _contentText!),
+                  Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    IconButton(
+      icon: Icon(Icons.replay),
+      onPressed: _ttsController.replay,
+      tooltip: 'Repetir',
+    ),
+    IconButton(
+      icon: Icon(_ttsController.isSpeaking ? Icons.pause : Icons.play_arrow),
+      onPressed: () async {
+  if (_isSpeaking) {
+    await _ttsController.pause(); // aunque pause tampoco funciona en todas las plataformas
+  } else {
+    await _ttsController.speak(_contentText!);
+  }
+  setState(() => _isSpeaking = !_isSpeaking);
+},
+      tooltip: _ttsController.isSpeaking ? 'Pausar' : 'Reproducir',
+    ),
+    IconButton(
+      icon: Icon(Icons.stop),
+      onPressed: () async {
+        await _ttsController.stop();
+        setState(() {});
+      },
+      tooltip: 'Detener',
+    ),
+  ],
+),
+    
+    // Botones para secciones específicas
+    if (_contentSections != null) ...[
+      Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 8,
+        children: _contentSections!.entries.map((entry) {
+          return ElevatedButton.icon(
+            icon: Icon(Icons.volume_up, size: 16),
+            label: Text(entry.key),
+            onPressed: () => _ttsController.speak("${entry.key}: ${entry.value}"),
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            ),
+          );
+        }).toList(),
+      ),
+      SizedBox(height: 16),
+    ],
+    
+    // Secciones de contenido
+    if (_contentText != null && !_loading) ...[
+  SizedBox(height: 20),
+  SectionCards(content: _contentText!),
+],
                 ],
                 if (_contentText == null && _rawResponse != null && !_loading) ...[
                   SizedBox(height: 20),

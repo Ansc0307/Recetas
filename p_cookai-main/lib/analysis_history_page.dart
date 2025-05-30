@@ -60,15 +60,64 @@ class AnalysisHistoryPage extends StatelessWidget {
         ExpansionTile(
   title: const Text('Ver detalles'),
   children: [
-    Column(
-      children: [
-        IconButton(
-          icon: Icon(Icons.volume_up, color: Colors.blue),
-          onPressed: () => TextToSpeech.speak(entry.content),
-        ),
-        SectionCards(content: entry.content),
-      ],
-    ),
+    ...TextToSpeech().extractSections(entry.content).entries.map((entrySection) {
+      final tts = TextToSpeech(); // Una nueva instancia por sección
+      bool isSpeaking = false;
+
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            elevation: 2,
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    entrySection.key,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  SizedBox(height: 6),
+                  Text(entrySection.value),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.replay),
+                        onPressed: () async {
+                          await tts.stop();
+                          await tts.speak("${entrySection.key}: ${entrySection.value}");
+                          setState(() => isSpeaking = true);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(isSpeaking ? Icons.pause : Icons.play_arrow),
+                        onPressed: () async {
+                          if (isSpeaking) {
+                            await tts.pause();
+                          } else {
+                            await tts.speak("${entrySection.key}: ${entrySection.value}");
+                          }
+                          setState(() => isSpeaking = !isSpeaking);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.stop),
+                        onPressed: () async {
+                          await tts.stop();
+                          setState(() => isSpeaking = false);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }),
   ],
 ),
 
@@ -81,4 +130,15 @@ class AnalysisHistoryPage extends StatelessWidget {
             ),
     );
   }
+}
+Map<String, String> cleanSections(Map<String, String> sections) {
+  final Map<String, String> cleaned = {};
+  final RegExp pattern = RegExp(r'^(\*+|#+|-+|\s*)');
+
+  for (var entry in sections.entries) {
+    final cleanedKey = entry.key.replaceAll(pattern, '').trim();
+    final cleanedValue = entry.value.replaceAll(pattern, '').trim();
+    cleaned[cleanedKey] = cleanedValue;
+  }
+  return cleaned;
 }
