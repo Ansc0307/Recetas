@@ -1,13 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'Vista/bmi_screen.dart';
-import 'ModelRT/obesity_predictor_form.dart';
-import 'home_page.dart';
-import 'analysis_history_page.dart';
+import 'circlenode.dart';
+import 'custom_shapes.dart';
 
 class Home extends StatefulWidget {
-  Home({super.key});
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -15,28 +11,30 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool flagVueltas = false;
+
   @override
   Widget build(BuildContext context) {
-    var screen = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: [
           Align(
-            alignment: Alignment(0, 0),
+            alignment: Alignment.center,
             child: AnimatedRotation(
               turns: flagVueltas ? 1 : 0,
-              duration: Duration(milliseconds: 1000),
+              duration: const Duration(milliseconds: 1000),
               child: AnimatedContainer(
-                duration: Duration(milliseconds: 1000),
+                duration: const Duration(milliseconds: 1000),
                 width: flagVueltas ? 350 : 0,
                 height: flagVueltas ? 350 : 0,
-                //color: Colors.purple,
                 child: Stack(
-                  children: [
-                    nodo(Colors.redAccent, 'A', 0, -1),
-                    nodo(Colors.orange, 'B', -1, 0),
-                    nodo(Colors.yellow, 'C', 0, 1),
-                    nodo(Colors.green, 'D', 1, 0),
+                  children: const [
+                    
+
+                    CircleNode(label: 'A', color: Colors.redAccent, alignment: Alignment(0, -1), shape: NodeShape.circle),
+CircleNode(label: 'B', color: Colors.orange, alignment: Alignment(-1, 0), shape: NodeShape.triangle),
+CircleNode(label: 'C', color: Colors.yellow, alignment: Alignment(0, 1), shape: NodeShape.diamond),
+CircleNode(label: 'D', color: Colors.green, alignment: Alignment(1, 0), shape: NodeShape.hexagon),
+
                   ],
                 ),
               ),
@@ -50,54 +48,7 @@ class _HomeState extends State<Home> {
             flagVueltas = !flagVueltas;
           });
         },
-      ),
-    );
-  }
-
-  Widget nodo(color, msg, double x1, double y1) {
-    return Align(
-      alignment: Alignment(x1, y1),
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            switch (msg) {
-              case 'A':
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ObesityPredictorForm()),
-                );
-
-                break;
-              case 'B':
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => BmiScreen()),
-                );
-                break;
-              case 'C':
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-                break;
-              case 'D':
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AnalysisHistoryPage()),
-                );
-                break;
-            }
-          });
-        },
-        child: Container(
-          width: 75,
-          height: 75,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100),
-            gradient: RadialGradient(colors: [Colors.white, color]),
-          ),
-          child: Center(child: Text(msg, style: TextStyle(fontSize: 45))),
-        ),
+        child: const Icon(Icons.sync),
       ),
     );
   }
