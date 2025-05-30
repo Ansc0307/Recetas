@@ -64,6 +64,18 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
           key: _formKey,
           child: ListView(
             children: [
+
+              const SizedBox(height: 10),
+              Card(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                color: Colors.lightBlue.shade100,
+                elevation: 2,
+                child: ListTile(
+                  leading: Icon(Icons.assessment, color: Colors.blue[900]),
+                  title: Text('Precisión del modelo'),
+                  subtitle: Text('${(modelAccuracy * 100).toStringAsFixed(2)} %'),
+                ),
+              ),
               const SizedBox(height: 10),
               Card(
                 color: Colors.white,
@@ -201,17 +213,7 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
               else if (prediction != null)
                 LifestylePredictionCard(predictionCode: prediction!),
               const SizedBox(height: 20),
-              Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                color: Colors.lightBlue.shade100,
-                elevation: 2,
-                child: ListTile(
-                  leading: Icon(Icons.assessment, color: Colors.blue[900]),
-                  title: Text('Precisión del modelo'),
-                  subtitle: Text('${(modelAccuracy * 100).toStringAsFixed(2)} %'),
-                ),
-              ),
-              const SizedBox(height: 10),
+            
             ],
           ),
         ),
