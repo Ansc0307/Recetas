@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../Grafico/prediction_card.dart';
 
 void main() => runApp(MaterialApp(home: ObesityPredictorForm()));
 
@@ -28,6 +29,7 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
   };
 
   String? prediction;
+  final double modelAccuracy = 0.9350;
 
   Future<void> predictObesity() async {
     final url = Uri.parse('https://obesity-api-1.onrender.com/predict');
@@ -162,8 +164,17 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
                 child: Text('Predecir'),
               ),
               SizedBox(height: 20),
-              if (prediction != null)
-                Text('Predicción: $prediction'),
+              if (prediction != null) PredictionCard(prediction: prediction!),
+              SizedBox(height: 20),
+              Card(
+                color: Colors.blue.shade50,
+                elevation: 2,
+                child: ListTile(
+                  leading: Icon(Icons.assessment, color: Colors.blue),
+                  title: Text('Precisión del modelo'),
+                  subtitle: Text('${(modelAccuracy * 100).toStringAsFixed(2)} %'),
+                ),
+              ),
             ],
           ),
         ),
