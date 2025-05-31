@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class PredictionService {
-  static const String _apiUrl = 'https://obesity-api-1.onrender.com/predict';
+  static const String _apiUrl = 'https://diabetes-cahb.onrender.com/predict';
 
   static Future<String> predictDia(Map<String, dynamic> formData) async {
     final dataToSend = formData.map((key, value) =>

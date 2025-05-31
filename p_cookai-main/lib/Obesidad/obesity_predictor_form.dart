@@ -14,7 +14,6 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
   final Map<String, dynamic> formData = {
     'Age': '',
     'Gender': '0',
-    'Weight': '',
     'CALC': '3',
     'FAVC': '0',
     'FCVC': '2',
@@ -95,10 +94,7 @@ class _ObesityPredictorFormState extends State<ObesityPredictorForm> {
                       ], onChanged: (value) {
                         formData['Gender'] = value;
                       }),
-                      const SizedBox(height: 10),
-                      buildTextInput('Peso', 'Weight', formData, onChanged: (value) {
-                        formData['Weight'] = value;
-                      }),
+                      
                       const SizedBox(height: 10),
                       buildDropdown('Frecuencia alcohol (CALC)', 'CALC', formData, [
                         {'value': '3', 'label': 'Nunca'},

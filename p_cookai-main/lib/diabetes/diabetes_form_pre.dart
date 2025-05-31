@@ -13,20 +13,24 @@ class DiabeticPredictionForm extends StatefulWidget {
 class _DiabeticPredictionFormState extends State<DiabeticPredictionForm> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, dynamic> formData = {
-    'Age': '',
-    'Gender': '0',
-    'Weight': '',
-    'CALC': '3',
-    'FAVC': '0',
-    'FCVC': '2',
-    'NCP': '1',
-    'SCC': '0',
-    'SMOKE': '0',
-    'CH2O': '2',
-    'FAF': '0',
-    'TUE': '2',
-    'MTRANS': '0',
-  };
+  'Age': '',
+  'Sex': '0',
+  'HighChol': '0',
+  'CholCheck': '0',
+  'BMI': '',
+  'Smoker': '0',
+  'Stroke': '0',
+  'HeartDiseaseorAttack': '0',
+  'PhysActivity': '0',
+  'Fruits': '0',
+  'Veggies': '0',
+  'HvyAlcoholConsump': '0',
+  'AnyHealthcare': '0',
+  'NoDocbcCost': '0',
+  'MentHlth': '0',
+  'PhysHlth': '0',
+};
+
 
   String? prediction;
   final double modelAccuracy = 0.9350;
@@ -52,7 +56,7 @@ class _DiabeticPredictionFormState extends State<DiabeticPredictionForm> {
       backgroundColor: Colors.blue.shade50,
       appBar: AppBar(
         title: const Text(
-          'Predicción de Salud con IA 🤖',
+          'Predicción de Diabetes con IA 🤖',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,

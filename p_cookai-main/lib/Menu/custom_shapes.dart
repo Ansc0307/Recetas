@@ -111,7 +111,7 @@ class ShapePainter extends CustomPainter {
 
            case NodeShape.person:
         // Silueta de persona estilo "vida activa"
-        final bodyPaint = Paint()..color = const Color.fromARGB(255, 23, 2, 33);
+        final bodyPaint = Paint()..color = const Color.fromARGB(255, 120, 21, 166);
 
         // Cabeza
         canvas.drawCircle(Offset(size.width * 0.5, size.height * 0.15), size.width * 0.08, bodyPaint);

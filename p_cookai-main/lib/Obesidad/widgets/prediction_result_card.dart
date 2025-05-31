@@ -27,16 +27,7 @@ class LifestylePredictionCard extends StatelessWidget {
                   ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            Text(
-              'Posiblemente tengas:',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              result['label'],
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
-            ),
-            const SizedBox(height: 12),
+            
             Text(
               '¿Por qué es importante?',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
@@ -78,7 +69,7 @@ class LifestylePredictionCard extends StatelessWidget {
     final Map<String, Map<String, dynamic>> info = {
       '0': {
         'title': 'Tu estilo de vida necesita atención',
-         'label': 'Peso Insuficiente',
+         
         'explanation': 'Actualmente, algunos hábitos pueden estar afectando tu salud y energía.',
         'recommendation': 'Es importante mejorar tu alimentación y consultar a un profesional.',
         'advice': 'Incluye más alimentos naturales y realiza actividad física moderada varias veces por semana.',
@@ -86,7 +77,7 @@ class LifestylePredictionCard extends StatelessWidget {
       },
       '1': {
         'title': 'Tu estilo de vida está bien, sigue así',
-        'label': 'Peso Normal',
+        
         'explanation': 'Mantener hábitos saludables ayuda a prevenir enfermedades y mantener energía.',
         'recommendation': 'Sigue con una dieta balanceada y ejercicio regular.',
         'advice': 'Continúa monitoreando tu salud y adapta hábitos según tus necesidades.',
@@ -94,7 +85,7 @@ class LifestylePredictionCard extends StatelessWidget {
       },
       '2': {
         'title': 'Es momento de hacer algunos cambios',
-        'label': 'Obesidad Tipo I',
+        
         'explanation': 'Hay señales de que ciertos hábitos podrían afectar tu bienestar a largo plazo.',
         'recommendation': 'Mejora tu alimentación y aumenta tu actividad física con ayuda profesional.',
         'advice': 'Reduce consumo de alimentos procesados y azúcares; incorpora más frutas y verduras.',
@@ -102,7 +93,7 @@ class LifestylePredictionCard extends StatelessWidget {
       },
       '3': {
         'title': 'Necesitas apoyo para mejorar tu salud',
-         'label': 'Obesidad Tipo II',
+         
         'explanation': 'Tu estilo de vida puede estar generando riesgos importantes para tu salud.',
         'recommendation': 'Busca ayuda profesional para crear un plan adecuado para ti.',
         'advice': 'Realiza cambios graduales y busca acompañamiento de especialistas.',
@@ -110,7 +101,7 @@ class LifestylePredictionCard extends StatelessWidget {
       },
       '4': {
         'title': 'Es urgente hacer cambios en tu estilo de vida',
-         'label': 'Obesidad Tipo III',
+         
         'explanation': 'Tu salud está en riesgo y requiere atención médica inmediata.',
         'recommendation': 'Consulta a profesionales y considera tratamientos especializados.',
         'advice': 'Evita automedicación y sigue las indicaciones médicas al pie de la letra.',
@@ -118,7 +109,7 @@ class LifestylePredictionCard extends StatelessWidget {
       },
       '5': {
         'title': 'Puedes mejorar tu estilo de vida',
-        'label': 'Sobrepeso Nivel I',
+        
         'explanation': 'Hay aspectos que puedes ajustar para mejorar tu bienestar general.',
         'recommendation': 'Empieza con pequeños cambios en alimentación y actividad física.',
         'advice': 'Controla porciones y realiza caminatas diarias para ganar hábitos saludables.',
@@ -126,7 +117,7 @@ class LifestylePredictionCard extends StatelessWidget {
       },
       '6': {
         'title': 'Es importante tomar medidas pronto',
-        'label': 'Sobrepeso Nivel II',
+      
         'explanation': 'Tu estilo de vida actual podría llevar a problemas de salud si no cambias.',
         'recommendation': 'Consulta a profesionales y realiza un plan de cambio sostenible.',
         'advice': 'Lleva un registro de alimentos y ejercicio, y evita el sedentarismo.',
