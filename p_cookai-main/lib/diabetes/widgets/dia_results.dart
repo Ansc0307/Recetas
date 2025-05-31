@@ -81,37 +81,46 @@ class DiabeticPredictionCard extends StatelessWidget {
   }
 
   Map<String, dynamic> _getDiabetesInfo(String code) {
-    final Map<String, Map<String, dynamic>> info = {
-      '0': {
-        'title': 'No se detecta diabetes',
-        'label': 'No tienes signos de diabetes actualmente.',
-        'explanation': 'Mantener un estilo de vida saludable reduce el riesgo de desarrollar diabetes en el futuro.',
-        'recommendation': 'Sigue comiendo de forma balanceada, haciendo ejercicio y acudiendo a chequeos regulares.',
-        'color': Colors.green,
-      },
-      '1': {
-        'title': 'Diabetes Tipo 1 detectada',
-        'label': 'Tienes indicios de diabetes tipo 1.',
-        'explanation': 'Este tipo suele diagnosticarse en personas jóvenes y requiere control constante de insulina.',
-        'recommendation': 'Consulta a un endocrinólogo. El tratamiento incluye insulina, monitoreo y ajustes alimenticios.',
-        'color': Colors.orange,
-      },
-      '2': {
-        'title': 'Diabetes Tipo 2 detectada',
-        'label': 'Tienes indicios de diabetes tipo 2.',
-        'explanation': 'Es más común en adultos y está relacionada con el estilo de vida y la alimentación.',
-        'recommendation': 'Se recomienda una dieta controlada, actividad física regular y seguimiento médico frecuente.',
-        'color': Colors.red,
-      },
-    };
+  final Map<String, Map<String, dynamic>> info = {
+    '0': {
+      'title': 'Sin indicios de diabetes',
+      'label': 'Actualmente no se detectan signos de diabetes.',
+      'explanation':
+          'Aunque no hay señales de diabetes, es importante continuar con hábitos saludables, ya que esta enfermedad puede desarrollarse con el tiempo.',
+      'recommendation':
+          'Mantén una alimentación equilibrada, realiza actividad física con regularidad, evita el sedentarismo y programa chequeos médicos anuales para prevenir cualquier cambio.',
+      'color': Colors.green,
+    },
+    '1': {
+      'title': 'Posible Diabetes Tipo 1',
+      'label': 'Se identifican indicios compatibles con diabetes tipo 1.',
+      'explanation':
+          'La diabetes tipo 1 suele aparecer a edades tempranas y se produce cuando el cuerpo deja de producir insulina. Requiere tratamiento médico constante.',
+      'recommendation':
+          'Consulta lo antes posible con un endocrinólogo. El tratamiento incluye insulina diaria, monitoreo continuo de glucosa y educación sobre el autocuidado. Un diagnóstico temprano mejora el control y la calidad de vida.',
+      'color': Colors.orange,
+    },
+    '2': {
+      'title': 'Posible Diabetes Tipo 2',
+      'label': 'Se identifican indicios compatibles con diabetes tipo 2.',
+      'explanation':
+          'La diabetes tipo 2 está relacionada con factores como el sobrepeso, la alimentación y la falta de ejercicio. Puede desarrollarse gradualmente y pasar desapercibida al inicio.',
+      'recommendation':
+          'Agenda una cita médica para confirmar el diagnóstico. Los cambios en la dieta, el aumento de la actividad física y el control regular de glucosa son fundamentales para prevenir complicaciones.',
+      'color': Colors.red,
+    },
+  };
 
-    return info[code] ??
-        {
-          'title': 'Resultado desconocido',
-          'label': 'No se pudo determinar el tipo de diabetes.',
-          'explanation': 'Es posible que haya un error en el código de predicción.',
-          'recommendation': 'Consulta a un profesional de salud para confirmar el diagnóstico.',
-          'color': Colors.grey,
-        };
-  }
+  return info[code] ??
+      {
+        'title': 'Resultado no reconocido',
+        'label': 'No se pudo determinar el diagnóstico con el código recibido.',
+        'explanation':
+            'Podría tratarse de un error en el procesamiento del modelo o en los datos ingresados.',
+        'recommendation':
+            'Te recomendamos repetir el análisis y consultar a un profesional de salud si tienes dudas o síntomas.',
+        'color': Colors.grey,
+      };
+}
+
 }

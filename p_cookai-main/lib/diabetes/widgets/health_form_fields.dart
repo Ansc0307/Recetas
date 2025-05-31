@@ -10,7 +10,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('Sexo', 'Sex', formData, [
+      buildDropdown('Sexo biológico', 'Sex', formData, [
         {'value': '0', 'label': 'Mujer'},
         {'value': '1', 'label': 'Hombre'},
       ], onChanged: (value) {
@@ -18,7 +18,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('Colesterol alto (HighChol)', 'HighChol', formData, [
+      buildDropdown('¿Colesterol alto diagnosticado?', 'HighChol', formData, [
         {'value': '0', 'label': 'No'},
         {'value': '1', 'label': 'Sí'},
       ], onChanged: (value) {
@@ -26,7 +26,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('Chequeo de colesterol (CholCheck)', 'CholCheck', formData, [
+      buildDropdown('¿Chequeo de colesterol en los últimos 5 años?', 'CholCheck', formData, [
         {'value': '0', 'label': 'No'},
         {'value': '1', 'label': 'Sí'},
       ], onChanged: (value) {
@@ -39,7 +39,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('¿Fuma? (Smoker)', 'Smoker', formData, [
+      buildDropdown('¿Ha fumado al menos 100 cigarrillos en su vida?', 'Smoker', formData, [
         {'value': '0', 'label': 'No'},
         {'value': '1', 'label': 'Sí'},
       ], onChanged: (value) {
@@ -47,7 +47,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('¿Ha tenido un ACV? (Stroke)', 'Stroke', formData, [
+      buildDropdown('¿Le han diagnosticado un ACV (derrame cerebral)?', 'Stroke', formData, [
         {'value': '0', 'label': 'No'},
         {'value': '1', 'label': 'Sí'},
       ], onChanged: (value) {
@@ -55,7 +55,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('¿Enfermedad o ataque cardíaco?', 'HeartDiseaseorAttack', formData, [
+      buildDropdown('¿Ha tenido enfermedad coronaria o ataque cardíaco?', 'HeartDiseaseorAttack', formData, [
         {'value': '0', 'label': 'No'},
         {'value': '1', 'label': 'Sí'},
       ], onChanged: (value) {
@@ -63,7 +63,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('¿Actividad física? (PhysActivity)', 'PhysActivity', formData, [
+      buildDropdown('¿Actividad física en los últimos 30 días (fuera del trabajo)?', 'PhysActivity', formData, [
         {'value': '0', 'label': 'No'},
         {'value': '1', 'label': 'Sí'},
       ], onChanged: (value) {
@@ -71,7 +71,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('¿Consume frutas? (Fruits)', 'Fruits', formData, [
+      buildDropdown('¿Consume frutas una vez o más al día?', 'Fruits', formData, [
         {'value': '0', 'label': 'No'},
         {'value': '1', 'label': 'Sí'},
       ], onChanged: (value) {
@@ -79,7 +79,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('¿Consume verduras? (Veggies)', 'Veggies', formData, [
+      buildDropdown('¿Consume verduras una vez o más al día?', 'Veggies', formData, [
         {'value': '0', 'label': 'No'},
         {'value': '1', 'label': 'Sí'},
       ], onChanged: (value) {
@@ -87,7 +87,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('¿Consumo elevado de alcohol? (HvyAlcoholConsump)', 'HvyAlcoholConsump', formData, [
+      buildDropdown('¿Consumo excesivo de alcohol (bajo criterios clínicos)?', 'HvyAlcoholConsump', formData, [
         {'value': '0', 'label': 'No'},
         {'value': '1', 'label': 'Sí'},
       ], onChanged: (value) {
@@ -95,7 +95,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('¿Tiene acceso a salud? (AnyHealthcare)', 'AnyHealthcare', formData, [
+      buildDropdown('¿Tiene algún tipo de acceso a atención médica?', 'AnyHealthcare', formData, [
         {'value': '0', 'label': 'No'},
         {'value': '1', 'label': 'Sí'},
       ], onChanged: (value) {
@@ -103,7 +103,7 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       }),
       const SizedBox(height: 10),
 
-      buildDropdown('¿No consultó por costo? (NoDocbcCost)', 'NoDocbcCost', formData, [
+      buildDropdown('¿Ha evitado consultar por motivos económicos?', 'NoDocbcCost', formData, [
         {'value': '0', 'label': 'No'},
         {'value': '1', 'label': 'Sí'},
       ], onChanged: (value) {
@@ -112,14 +112,14 @@ Widget buildHealthFormFields(Map<String, dynamic> formData, Function setStateCal
       const SizedBox(height: 10),
 
       buildTextInput(
-        'Días de mala salud mental (MentHlth)', 'MentHlth', formData,
+        'Días con mala salud mental (últimos 30 días)', 'MentHlth', formData,
         maxValue: 30, minValue: 0,
         onChanged: (value) => formData['MentHlth'] = value,
       ),
       const SizedBox(height: 10),
 
       buildTextInput(
-        'Días de mala salud física (PhysHlth)', 'PhysHlth', formData,
+        'Días con mala salud física (últimos 30 días)', 'PhysHlth', formData,
         maxValue: 30, minValue: 0,
         onChanged: (value) => formData['PhysHlth'] = value,
       ),
