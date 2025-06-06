@@ -5,13 +5,26 @@ Widget buildTextInput(
   String keyName,
   Map<String, dynamic> formData, {
   required Function(String) onChanged,
+  int? minValue,
+  int? maxValue,
 }) {
   return TextFormField(
     decoration: InputDecoration(labelText: label),
     keyboardType: TextInputType.number,
-    initialValue: formData[keyName],
+    initialValue: formData[keyName]?.toString(),
     onChanged: onChanged,
-    validator: (value) => value == null || value.isEmpty ? 'Requerido' : null,
+    validator: (value) {
+      if (value == null || value.isEmpty) return 'Requerido';
+      final parsed = int.tryParse(value);
+      if (parsed == null) return 'Debe ser un número entero';
+      if (minValue != null && parsed < minValue) {
+        return 'Debe ser ≥ $minValue';
+      }
+      if (maxValue != null && parsed > maxValue) {
+        return 'Debe ser ≤ $maxValue';
+      }
+      return null;
+    },
     onSaved: (value) => formData[keyName] = value!,
   );
 }

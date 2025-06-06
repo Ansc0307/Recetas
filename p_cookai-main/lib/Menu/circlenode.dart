@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 //import 'package:cookai_prototype/bmi.dart';
 import '../screenss/bmi_screen.dart';
 //import '../ModelRT/obesity_predictor_form.dart';
-import '../Obesidad/obesity_predictor_form.dart';
+//import '../Obesidad/obesity_predictor_form.dart';
 import '../diabetes/diabetes_form_pre.dart';
 import '../home_page.dart';
 import '../analysis_history_page.dart';
