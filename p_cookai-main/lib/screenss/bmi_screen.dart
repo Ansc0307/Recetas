@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../utils/bmi_calculator.dart';
-import '../utils/bmi_colors.dart';
+import 'utils/bmi_calculator.dart';
+import 'utils/bmi_colors.dart';
 
 class BmiScreen extends StatefulWidget {
   const BmiScreen({super.key});
