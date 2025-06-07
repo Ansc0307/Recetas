@@ -1,23 +1,13 @@
 import 'package:flutter/material.dart';
-//import '../Vista/bmi_screen.dart';
-//import 'package:cookai_prototype/bmi.dart';
-//import '../screenss/bmi_screen.dart';
-//import '../ModelRT/obesity_predictor_form.dart';
-//import '../Obesidad/obesity_predictor_form.dart';
-//import '../diabetes/diabetes_form_pre.dart';
-//import '../home_page.dart';
-//import '../analysis_history_page.dart';
-import 'custom_shapes.dart'; // Archivo nuevo que definiremos abajo
 import '../../diabetes/screens/diabetes_form_screen.dart';
-
-
+import '../../menu/widgets/custom_shapes.dart';
+import '../../bmi/presentation/bmi_screen.dart';
 
 class CircleNode extends StatelessWidget {
   final Color color;
   final String label;
   final Alignment alignment;
   final NodeShape shape;
-  
 
   const CircleNode({
     super.key,
@@ -31,21 +21,19 @@ class CircleNode extends StatelessWidget {
     Widget destination;
     switch (label) {
       case 'B':
-        //destination = ObesityPredictorForm();
         destination = DiabetesFormScreen();
         break;
       case 'D':
-        //destination = BmiScreen();
-        destination = DiabetesFormScreen();
-        break;
+      destination = BmiScreen();
+      break;
+        // TODO: Agrega tu pantalla de BMI aquí
+        return;
       case 'A':
-        //destination = HomePage();
-        destination = DiabetesFormScreen();
-        break;
+        // TODO: Agrega tu pantalla de Home aquí
+        return;
       case 'C':
-        //destination = AnalysisHistoryPage();
-        destination = DiabetesFormScreen();
-        break;
+        // TODO: Agrega tu pantalla de Historial aquí
+        return;
       default:
         return;
     }
@@ -64,12 +52,9 @@ class CircleNode extends StatelessWidget {
         onTap: () => _navigate(context),
         child: CustomPaint(
           painter: ShapePainter(color: color, shape: shape),
-          child: SizedBox(
+          child: const SizedBox(
             width: 75,
             height: 75,
-            child: Center(
-              
-            ),
           ),
         ),
       ),

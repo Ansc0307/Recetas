@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:cookai_prototype/analysis_history_page.dart';
+import 'package:cookai_prototype/sin_riverpod/analysis_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'image_service.dart';
