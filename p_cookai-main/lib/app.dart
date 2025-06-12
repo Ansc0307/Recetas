@@ -17,7 +17,8 @@ class MyApp extends StatelessWidget {
 */
 
 import 'package:flutter/material.dart';
-import 'home.dart';
+//import 'home.dart';
+import 'screenss/welcome_screen.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepOrange,
         scaffoldBackgroundColor: Colors.grey[50],
       ),
-      home: Home(),
+      //home: Home(),
+       home: WelcomeScreen(),
     );
   }
 }

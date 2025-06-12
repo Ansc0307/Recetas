@@ -5,7 +5,8 @@ import 'Menu/plate_painter.dart';
 import 'Menu/TableBackgroundPainter.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final bool esPremium;
+  const Home({Key? key, required this.esPremium}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
