@@ -35,10 +35,10 @@ class CircleNode extends StatelessWidget {
         destination = BmiScreen();
         break;
       case 'A':
-        destination = HomePage();
+        destination = HomePage(esPremium: false);
         break;
       case 'C':
-        destination = AnalysisHistoryPage();
+        destination = AnalysisHistoryPage(esPremium: false);
         break;
       default:
         return;

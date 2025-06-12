@@ -10,6 +10,8 @@ import 'history_store.dart';
 import 'tts_service.dart';
 
 class HomePage extends StatefulWidget {
+  final bool esPremium;
+  HomePage({required this.esPremium});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -46,8 +48,14 @@ class _HomePageState extends State<HomePage> {
     final picked = await _picker.pickImage(source: ImageSource.camera);
     if (picked != null) setState(() => _setImage(picked));
   }
-
+int _escaneosHoy = 0;
   Future<void> _analyzeImage() async {
+    if (!widget.esPremium && _escaneosHoy >= 3) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Límite diario de 5 escaneos alcanzado para usuarios gratuitos')),
+    );
+    return;
+  }
     if (_image == null) return;
     setState(() => _loading = true);
 
@@ -86,9 +94,17 @@ class _HomePageState extends State<HomePage> {
     } finally {
       setState(() => _loading = false);
     }
+    _escaneosHoy++;
   }
 //-------------------------------------------------
+int _escaneos=0;
 Future<void> _analyzeIgredientes() async {
+    if (!widget.esPremium && _escaneos >= 3) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Límite diario de 5 escaneos alcanzado para usuarios gratuitos')),
+    );
+    return;
+  }
     if (_image == null) return;
     setState(() => _loading = true);
 
@@ -119,6 +135,7 @@ Future<void> _analyzeIgredientes() async {
     } finally {
       setState(() => _loading = false);
     }
+    _escaneos++;
   }
   @override
   Widget _buildButtonRow() {
@@ -202,11 +219,19 @@ Widget _buildHistoryButton(BuildContext context) {
     style: _buttonStyle(),
     icon: const Icon(Icons.history),
     label: const Text("Ver historial"),
-    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AnalysisHistoryPage())),
+    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AnalysisHistoryPage(esPremium: false,))),
   );
 }
 
 Widget _buildTTSControls() {
+  if (!widget.esPremium) {
+  return Center(
+    child: Text(
+      ' ',
+      style: TextStyle(color: Colors.grey.shade700, fontStyle: FontStyle.italic),
+    ),
+  );
+}
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
@@ -240,6 +265,14 @@ Widget _buildTTSControls() {
 }
 
 Widget _buildSectionTTSButtons() {
+  if (!widget.esPremium) {
+  return Center(
+    child: Text(
+      '🔒 Función solo disponible en versión Premium',
+      style: TextStyle(color: Colors.grey.shade700, fontStyle: FontStyle.italic),
+    ),
+  );
+}
   return Wrap(
     alignment: WrapAlignment.center,
     spacing: 8,
