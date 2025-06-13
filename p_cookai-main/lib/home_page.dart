@@ -268,7 +268,7 @@ Widget _buildSectionTTSButtons() {
   if (!widget.esPremium) {
   return Center(
     child: Text(
-      '🔒 Función solo disponible en versión Premium',
+      '🔒 Funcionalidad de voz solo disponible en versión premium.',
       style: TextStyle(color: Colors.grey.shade700, fontStyle: FontStyle.italic),
     ),
   );

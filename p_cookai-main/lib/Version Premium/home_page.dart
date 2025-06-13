@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'image_service.dart';
 import 'widgets/section_cards.dart';
-import 'analysis_history.dart'; //encarpetar en "model"
-import 'analysis_history_page.dart';
+//import 'analysis_history.dart'; //encarpetar en "model"
+import '../Version Premium/analysis_history_page.dart';
+import '../Version Premium/analysis_history.dart';
 import 'history_store.dart';
 import 'tts_service.dart';
 
@@ -203,7 +204,7 @@ Widget _buildHistoryButton(BuildContext context) {
     style: _buttonStyle(),
     icon: const Icon(Icons.history),
     label: const Text("Ver historial"),
-    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AnalysisHistoryPage())),
+    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AnalysisHistoryPagePrem())),
   );
 }
 

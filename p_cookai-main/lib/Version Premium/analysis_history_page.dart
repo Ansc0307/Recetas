@@ -3,8 +3,8 @@ import 'history_store.dart';
 import 'dart:io';
 import 'tts_service.dart';
 
-class AnalysisHistoryPage extends StatelessWidget {
-  const AnalysisHistoryPage({super.key});
+class AnalysisHistoryPagePrem extends StatelessWidget {
+  const AnalysisHistoryPagePrem({super.key});
 
   @override
   Widget build(BuildContext context) {
