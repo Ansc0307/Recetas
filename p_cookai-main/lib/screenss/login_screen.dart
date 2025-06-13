@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../home.dart';
+import '../home_prem.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -82,6 +83,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
+onPressed: () {
+  if (_formKey.currentState!.validate()) {
+    String username = _usernameController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (password == "premium") {
+      // Usuario premium → HomePrem
+      Navigator.pushReplacement(
+        context,
+        //MaterialPageRoute(builder: (context) => HomePrem()),
+         MaterialPageRoute(builder: (context) => HomePrem(esPremium: true)),
+      );
+    } else {
+      // Usuario normal → Home con esPremium: false
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Home(esPremium: false)),
+      );
+    }
+  }
+},
+
+
+
+/*
                   onPressed: () {
   if (_formKey.currentState!.validate()) {
     String username = _usernameController.text.trim();
@@ -93,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
       MaterialPageRoute(builder: (context) => Home(esPremium: esPremium)),
     );
   }
-},
+},*/
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0288D1),
                     shape: RoundedRectangleBorder(
