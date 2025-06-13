@@ -4,8 +4,7 @@ import 'dart:io';
 import 'tts_service.dart';
 
 class AnalysisHistoryPage extends StatelessWidget {
-  final bool esPremium;
-  const AnalysisHistoryPage({Key? key, required this.esPremium}) : super(key: key);
+  const AnalysisHistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -89,91 +88,97 @@ class AnalysisHistoryPage extends StatelessWidget {
                                 ),
                               ),
                               children: [
-  ...TextToSpeech()
-      .extractSections(entry.content)
-      .entries
-      .map((entrySection) {
-    final tts = TextToSpeech();
-    bool isSpeaking = false;
+                                ...TextToSpeech()
+                                    .extractSections(entry.content)
+                                    .entries
+                                    .map((entrySection) {
+                                  final tts = TextToSpeech();
+                                  bool isSpeaking = false;
 
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return Card(
-          color: Colors.deepPurple.shade50,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  entrySection.key,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: Colors.deepPurple,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(entrySection.value),
-                const SizedBox(height: 8),
-
-                // 👉 Condicional según si es premium
-                if (esPremium) ...[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.replay, color: Colors.deepPurple),
-                        onPressed: () async {
-                          await tts.stop();
-                          await tts.speak(
-                              "${entrySection.key}: ${entrySection.value}");
-                          setState(() => isSpeaking = true);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          isSpeaking ? Icons.pause : Icons.play_arrow,
-                          color: Colors.deepPurple,
-                        ),
-                        onPressed: () async {
-                          if (isSpeaking) {
-                            await tts.pause();
-                          } else {
-                            await tts.speak(
-                                "${entrySection.key}: ${entrySection.value}");
-                          }
-                          setState(() => isSpeaking = !isSpeaking);
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.stop, color: Colors.deepPurple),
-                        onPressed: () async {
-                          await tts.stop();
-                          setState(() => isSpeaking = false);
-                        },
-                      ),
-                    ],
-                  ),
-                ] else ...[
-                  const Text(
-                    "🔒 Funcionalidad de voz solo disponible en versión premium.",
-                    style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }),
-]
-,
+                                  return StatefulBuilder(
+                                    builder: (context, setState) {
+                                      return Card(
+                                        color: Colors.deepPurple.shade50,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 6, horizontal: 8),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                entrySection.key,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                  color: Colors.deepPurple,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Text(entrySection.value),
+                                              const SizedBox(height: 8),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                      Icons.replay,
+                                                      color: Colors.deepPurple,
+                                                    ),
+                                                    onPressed: () async {
+                                                      await tts.stop();
+                                                      await tts.speak(
+                                                          "${entrySection.key}: ${entrySection.value}");
+                                                      setState(() =>
+                                                          isSpeaking = true);
+                                                    },
+                                                  ),
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      isSpeaking
+                                                          ? Icons.pause
+                                                          : Icons.play_arrow,
+                                                      color: Colors.deepPurple,
+                                                    ),
+                                                    onPressed: () async {
+                                                      if (isSpeaking) {
+                                                        await tts.pause();
+                                                      } else {
+                                                        await tts.speak(
+                                                            "${entrySection.key}: ${entrySection.value}");
+                                                      }
+                                                      setState(() =>
+                                                          isSpeaking =
+                                                              !isSpeaking);
+                                                    },
+                                                  ),
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                      Icons.stop,
+                                                      color: Colors.deepPurple,
+                                                    ),
+                                                    onPressed: () async {
+                                                      await tts.stop();
+                                                      setState(() =>
+                                                          isSpeaking = false);
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }),
+                              ],
                             ),
                           ],
                         ),
