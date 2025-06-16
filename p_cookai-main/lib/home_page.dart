@@ -101,7 +101,7 @@ int _escaneos=0;
 Future<void> _analyzeIgredientes() async {
     if (!widget.esPremium && _escaneos >= 3) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Límite diario de 5 escaneos alcanzado para usuarios gratuitos')),
+      const SnackBar(content: Text('Límite diario de 3 escaneos alcanzado para usuarios gratuitos')),
     );
     return;
   }

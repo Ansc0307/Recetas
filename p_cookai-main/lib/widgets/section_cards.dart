@@ -23,6 +23,23 @@ Widget build(BuildContext context) {
     final sectionContent = content.substring(start, end).trim();
     sections[title] = sectionContent;
   }
+  if (sections.isEmpty) {
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Card(
+        color: Colors.grey.shade100,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            content.trim(),
+            style: const TextStyle(fontSize: 16, height: 1.5),
+          ),
+        ),
+      ),
+    );
+  }
 
   final colors = [
     Colors.green.shade50,
