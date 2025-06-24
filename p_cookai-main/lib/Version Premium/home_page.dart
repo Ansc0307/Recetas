@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'image_service.dart';
 import 'widgets/section_cards.dart';
-import 'analysis_history.dart'; //encarpetar en "model"
+//import 'analysis_history.dart'; //encarpetar en "model"
+import '../Version Premium/analysis_history_page.dart';
+import '../Version Premium/analysis_history.dart';
 import 'history_store.dart';
 import 'tts_service.dart';
 
 class HomePage extends StatefulWidget {
-  final bool esPremium;
-  HomePage({required this.esPremium});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -48,14 +48,8 @@ class _HomePageState extends State<HomePage> {
     final picked = await _picker.pickImage(source: ImageSource.camera);
     if (picked != null) setState(() => _setImage(picked));
   }
-int _escaneosHoy = 0;
+
   Future<void> _analyzeImage() async {
-    if (!widget.esPremium && _escaneosHoy >= 3) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Límite diario de 3 escaneos alcanzado para usuarios gratuitos')),
-    );
-    return;
-  }
     if (_image == null) return;
     setState(() => _loading = true);
 
@@ -94,17 +88,9 @@ int _escaneosHoy = 0;
     } finally {
       setState(() => _loading = false);
     }
-    _escaneosHoy++;
   }
 //-------------------------------------------------
-int _escaneos=0;
 Future<void> _analyzeIgredientes() async {
-    if (!widget.esPremium && _escaneos >= 3) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Límite diario de 3 escaneos alcanzado para usuarios gratuitos')),
-    );
-    return;
-  }
     if (_image == null) return;
     setState(() => _loading = true);
 
@@ -135,7 +121,6 @@ Future<void> _analyzeIgredientes() async {
     } finally {
       setState(() => _loading = false);
     }
-    _escaneos++;
   }
   @override
   Widget _buildButtonRow() {
@@ -219,19 +204,11 @@ Widget _buildHistoryButton(BuildContext context) {
     style: _buttonStyle(),
     icon: const Icon(Icons.history),
     label: const Text("Ver historial"),
-    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AnalysisHistoryPage(esPremium: false,))),
+    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AnalysisHistoryPagePrem())),
   );
 }
 
 Widget _buildTTSControls() {
-  if (!widget.esPremium) {
-  return Center(
-    child: Text(
-      ' ',
-      style: TextStyle(color: Colors.grey.shade700, fontStyle: FontStyle.italic),
-    ),
-  );
-}
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
@@ -265,14 +242,6 @@ Widget _buildTTSControls() {
 }
 
 Widget _buildSectionTTSButtons() {
-  if (!widget.esPremium) {
-  return Center(
-    child: Text(
-      '🔒 Funcionalidad de voz solo disponible en versión premium.',
-      style: TextStyle(color: Colors.grey.shade700, fontStyle: FontStyle.italic),
-    ),
-  );
-}
   return Wrap(
     alignment: WrapAlignment.center,
     spacing: 8,

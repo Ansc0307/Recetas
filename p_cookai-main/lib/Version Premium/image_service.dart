@@ -101,14 +101,12 @@ Future<AnalysisResult> analyzeIngredientesWithApi(File imageFile) async {
   final dataUri = 'data:image/${imageFile.path.split('.').last};base64,$base64Image';
 
 final promptText = '''
-Analiza la imagen y detecta los ingredientes o alimentos visibles.
+Analiza la imagen y detecta los ingredientes o alimentos visibles. Para cada uno, indica:
 
-### Estado visual
-Describe el color, la textura y cualquier signo de descomposición visible para cada alimento.
+- Estado visual (color, textura, posibles signos de descomposición).
+- ¿Apto para consumo humano? (Sí / No).
 
-### Apto para consumo
-Indica si cada alimento es apto para el consumo humano (**Sí** / **No**), justificando brevemente en caso de respuesta negativa.
-Evita usar tablas. Presenta la información como una lista clara y estructurada.
+Presenta la información de forma clara y ordenada para cada alimento.
 ''';
 
   final payload = {
