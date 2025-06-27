@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../screenss/bmi_screen.dart';
 //import '../ModelRT/obesity_predictor_form.dart';
 //import '../Obesidad/obesity_predictor_form.dart';
-import '../diabetes/diabetes_form_pre.dart';
+//import '../diabetes/diabetes_form_pre.dart';
 //import '../../home_page.dart';
 import '../Version Premium/analysis_history_page.dart';
 import '../Version Premium/home_page.dart';
@@ -30,7 +30,8 @@ class CircleNode extends StatelessWidget {
     switch (label) {
       case 'B':
         //destination = ObesityPredictorForm();
-        destination = DiabeticPredictionForm();
+        //destination = DiabeticPredictionForm();
+        destination = BmiScreen();
         break;
       case 'D':
         destination = BmiScreen();
